@@ -30,7 +30,6 @@ class AddTimerViewController: UIViewController, UITextFieldDelegate {
         ("빵", false), ("야채", false), ("해산물", false), ("기타", false)]
     
     var foodBtnType: (() -> String)?
-    var uiButton = [UIButton]()
     static let uiLabelColorArr = [#colorLiteral(red: 1, green: 0, blue: 0, alpha: 0.2), #colorLiteral(red: 0.9254902005, green: 0.2352941185, blue: 0.1019607857, alpha: 0.2), #colorLiteral(red: 0.9686274529, green: 0.78039217, blue: 0.3450980484, alpha: 0.2), #colorLiteral(red: 0.3411764801, green: 0.6235294342, blue: 0.1686274558, alpha: 0.2), #colorLiteral(red: 0.2392156869, green: 0.6745098233, blue: 0.9686274529, alpha: 0.2), #colorLiteral(red: 0.2196078449, green: 0.2030190556, blue: 0.8549019694, alpha: 0.2), #colorLiteral(red: 0.5, green: 0.007843137719, blue: 0.4200693323, alpha: 0.2)]
     var uiTxtFields = [UITextField]()
     let foodViewModel = FoodViewModel.shared
@@ -43,12 +42,7 @@ class AddTimerViewController: UIViewController, UITextFieldDelegate {
     override func viewDidLoad() {
         // Do any additional setup after loading the view.
         super.viewDidLoad()
-        //uiButton = [gogiButton, snackButton, ganpeyonButton, breadButton, chesoButton, hesanmulButton, etcFoodButton]
-        tintBtn(uiButton)
         uiTxtFields = [foodNameTxt, ondoTxt, hourTxt, minTxt, turnTimeTxt ]
-        
-        addButton.backgroundColor = UIColor.systemBlue
-        addButton.layer.cornerRadius = 15
         
         cvFoodType.reloadData()
     }
@@ -94,16 +88,6 @@ extension AddTimerViewController {
         self.hourTxt.resignFirstResponder()
         self.minTxt.resignFirstResponder()
         self.turnTimeTxt.resignFirstResponder()
-    }
-    
-    
-    func tintBtn(_ uiBtn: [UIButton]) { // 음식유형 버튼 초기화
-        var i: Int = 0
-        for item in uiBtn {
-            item.backgroundColor = AddTimerViewController.uiLabelColorArr[i]
-            item.layer.cornerRadius = 5
-            i += 1
-        }
     }
     
     func txtField_makeEmpty(txtFields: [UITextField]) { // 글자입력칸 초기화
