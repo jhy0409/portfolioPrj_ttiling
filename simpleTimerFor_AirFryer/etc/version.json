@@ -1,0 +1,9 @@
+{
+    "force_update_message" : "최신 버전의 앱으로 업데이트해주세요.",
+    "lastest_version_code" : "1",
+    "lastest_version_name" : "0.2",
+    "minimum_version_code" : "1",
+    "minimum_version_name" : "0.1",
+    "optional_update_message" : "최신 버전 업데이트가 있어요. 새로운앱으로 설치하시겠어요?"
+}
+

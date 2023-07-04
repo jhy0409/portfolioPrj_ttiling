@@ -1,0 +1,194 @@
+{
+    "sample" : [
+                {
+                    "foodId" : 1,
+                    "hour": 0,
+                    "min": 5,
+                    "foodName": "눅눅해진 치킨",
+                    "turningFood": 0,
+                    "foodType": "고기",
+                    "isTimerOn": false,
+                    "ondo": 180
+                },
+                {
+                    "foodId" : 2,
+                    "hour": 0,
+                    "min": 20,
+                    "foodName": "막창",
+                    "turningFood": 1,
+                    "foodType": "고기",
+                    "isTimerOn": false,
+                    "ondo": 180
+                },
+                {
+                    "foodId" : 3,
+                    "hour": 0,
+                    "min": 8,
+                    "foodName": "베이컨떡말이",
+                    "turningFood": 0,
+                    "foodType": "고기",
+                    "isTimerOn": false,
+                    "ondo": 200
+                },
+                {
+                    "foodId" : 4,
+                    "hour": 0,
+                    "min": 5,
+                    "foodName": "닭다리",
+                    "turningFood": 0,
+                    "foodType": "과자",
+                    "isTimerOn": false,
+                    "ondo": 200
+                },
+                {
+                    "foodId" : 5,
+                    "hour": 0,
+                    "min": 7,
+                    "foodName": "라면땅",
+                    "turningFood": 0,
+                    "foodType": "과자",
+                    "isTimerOn": false,
+                    "ondo": 180
+                },
+                {
+                    "foodId" : 6,
+                    "hour": 0,
+                    "min": 6,
+                    "foodName": "마시멜로",
+                    "turningFood": 0,
+                    "foodType": "과자",
+                    "isTimerOn": false,
+                    "ondo": 180
+                },
+                {
+                    "foodId" : 7,
+                    "hour": 0,
+                    "min": 30,
+                    "foodName": "맥반석란",
+                    "turningFood": 0,
+                    "foodType": "기타",
+                    "isTimerOn": false,
+                    "ondo": 120
+                },
+                {
+                    "foodId" : 8,
+                    "hour": 0,
+                    "min": 8,
+                    "foodName": "반숙란",
+                    "turningFood": 0,
+                    "foodType": "기타",
+                    "isTimerOn": false,
+                    "ondo": 150
+                },
+                {
+                    "foodId" : 9,
+                    "hour": 0,
+                    "min": 7,
+                    "foodName": "갈비만두 그라탕",
+                    "turningFood": 0,
+                    "foodType": "냉동식품",
+                    "isTimerOn": false,
+                    "ondo": 170
+                },
+                {
+                    "foodId" : 10,
+                    "hour": 0,
+                    "min": 20,
+                    "foodName": "개성 왕만두",
+                    "turningFood": 1,
+                    "foodType": "냉동식품",
+                    "isTimerOn": false,
+                    "ondo": 180
+                },
+                {
+                    "foodId" : 11,
+                    "hour": 0,
+                    "min": 10,
+                    "foodName": "겉바속쫀 인절미",
+                    "turningFood": 0,
+                    "foodType": "냉동식품",
+                    "isTimerOn": false,
+                    "ondo": 180
+                },
+                {
+                    "foodId" : 12,
+                    "hour": 0,
+                    "min": 8,
+                    "foodName": "눅눅한 붕어빵",
+                    "turningFood": 0,
+                    "foodType": "빵",
+                    "isTimerOn": false,
+                    "ondo": 140
+                },
+                {
+                    "foodId" : 13,
+                    "hour": 0,
+                    "min": 5,
+                    "foodName": "마약토스트",
+                    "turningFood": 0,
+                    "foodType": "빵",
+                    "isTimerOn": false,
+                    "ondo": 180
+                },
+                {
+                    "foodId" : 14,
+                    "hour": 0,
+                    "min": 10,
+                    "foodName": "마요네즈 마늘빵",
+                    "turningFood": 0,
+                    "foodType": "빵",
+                    "isTimerOn": false,
+                    "ondo": 180
+                },
+                {
+                    "foodId" : 15,
+                    "hour": 0,
+                    "min": 15,
+                    "foodName": "가지구이",
+                    "turningFood": 0,
+                    "foodType": "야채",
+                    "isTimerOn": false,
+                    "ondo": 180
+                },
+                {
+                    "foodId" : 16,
+                    "hour": 0,
+                    "min": 10,
+                    "foodName": "감자칩",
+                    "turningFood": 0,
+                    "foodType": "야채",
+                    "isTimerOn": false,
+                    "ondo": 180
+                },
+                {
+                    "foodId" : 17,
+                    "hour": 0,
+                    "min": 15,
+                    "foodName": "고구마그라탕",
+                    "turningFood": 0,
+                    "foodType": "야채",
+                    "isTimerOn": false,
+                    "ondo": 200
+                },
+                {
+                    "foodId" : 18,
+                    "hour": 0,
+                    "min": 15,
+                    "foodName": "새우구이",
+                    "turningFood": 1,
+                    "foodType": "해산물",
+                    "isTimerOn": false,
+                    "ondo": 180
+                },
+                {
+                    "foodId" : 19,
+                    "hour": 0,
+                    "min": 8,
+                    "foodName": "연어스테이크",
+                    "turningFood": 0,
+                    "foodType": "해산물",
+                    "isTimerOn": false,
+                    "ondo": 200
+                }
+            ]
+}
