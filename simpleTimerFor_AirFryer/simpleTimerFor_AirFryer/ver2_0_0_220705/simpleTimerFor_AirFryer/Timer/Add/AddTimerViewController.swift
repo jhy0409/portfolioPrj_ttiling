@@ -39,6 +39,54 @@ class AddTimerViewController: UIViewController, UITextFieldDelegate {
         }.first?.type ?? "NONE"
     }
     
+    // [ㅇ] 기본값 세팅
+    /// 온도
+    var ondo: String {
+        return ondoTxt.text == "" ? "0" : String(ondoTxt.text ?? "")
+    }
+
+    /// 뒤집는 횟수
+    var turn: String {
+      return turnTimeTxt.text == "" ? "0" : String(turnTimeTxt.text ?? "")
+    }
+    
+    /// 시간
+    var hour: String {
+        return hourTxt.text == "" ? "0" : String(hourTxt.text ?? "")
+    }
+    
+    /// 분
+    var min: String {
+        return minTxt.text == "" ? "0" : String(minTxt.text ?? "")
+    }
+    
+    /// 음식이름
+    var foodName: String {
+        return foodNameTxt.text == "" ? "" : String(foodNameTxt.text ?? "")
+    }
+    
+    // [ㅇ] 유효값 확인목록
+    var if1_hourNMinZero: Bool {
+        return (hour == "0" && min == "0")
+    }
+    
+    var if2_hourZero: Bool {
+        return (hour != "0" && Int(min)! > 60)
+    }
+    
+    var if3_foodNameEmpty: Bool {
+        return foodName.isEmpty
+    }
+    
+    var if4_ondoZero: Bool {
+        return ondo == "0"
+    }
+    
+    var if5_minToH_T: Bool {
+        return (hour == "0" && Int(min)! > 60 )
+    }
+    
+    
     override func viewDidLoad() {
         // Do any additional setup after loading the view.
         super.viewDidLoad()
@@ -48,20 +96,6 @@ class AddTimerViewController: UIViewController, UITextFieldDelegate {
     }
     
     @IBAction func addButtonTap(_ sender: Any) {
-        // [ㅇ] 기본값 세팅
-        let ondo = ondoTxt.text == "" ? "0" : String(ondoTxt.text!) // 온도
-        let turn = turnTimeTxt.text == "" ? "0" : String(turnTimeTxt.text!) // 뒤집는 횟수
-        var hour = hourTxt.text == "" ? "0" : String(hourTxt.text!) // 시간
-        var min = minTxt.text == "" ? "0" : String(minTxt.text!) // 분
-        let foodName = foodNameTxt.text == "" ? "" : String(foodNameTxt.text!) // 음식이름
-        
-        // [ㅇ] 유효값 확인목록 튜플로 저장
-        let (if1_hourNMinZero, if2_hourZero, if3_foodNameEmpty, if4_ondoZero, if5_minToH_T) =
-            ((hour == "0" && min == "0"),
-             (hour != "0" && Int(min)! > 60),
-             foodName.isEmpty, ondo == "0",
-             (hour == "0" && Int(min)! > 60 ))
-        
         // [ㅇ] 유효값 검사 후 반환값이 true일 때만 아래코드 실행
         let tOrF = showAlert(if1_hourNMinZero, if2_hourZero, if3_foodNameEmpty, if4_ondoZero)
         if tOrF == true {
@@ -69,7 +103,7 @@ class AddTimerViewController: UIViewController, UITextFieldDelegate {
                 if let minIf = Int(min), if5_minToH_T == true {
                 let h = minIf / 60 // 60으로 나눈 몫
                 let m = minIf % 60 // 60으로 나눈 나머지
-                hour = String(h); min = String(m)
+                //hour = String(h); min = String(m)
             }
             
             let foodType: String = btnSenderTxt == "NONE" ? "기타" : btnSenderTxt
@@ -142,7 +176,6 @@ extension AddTimerViewController: UICollectionViewDataSource, UICollectionViewDe
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "AddFoodTypeCVC", for: indexPath) as! AddFoodTypeCVC
         cell.tag = indexPath.item
-        cell.btn_foodType.tag = indexPath.item
         
         cell.btn_foodType.addTarget(self, action: #selector(btnFoodTypeTapAction), for: .touchUpInside)
         cell.updateUI(type: foodTypeArr[indexPath.item])
