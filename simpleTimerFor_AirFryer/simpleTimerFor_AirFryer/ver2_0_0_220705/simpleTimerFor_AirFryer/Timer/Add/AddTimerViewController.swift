@@ -86,6 +86,24 @@ class AddTimerViewController: UIViewController, UITextFieldDelegate {
         return (hour == "0" && Int(min)! > 60 )
     }
     
+    var str: String {
+        var tempRes: String = ""
+        
+        if if1_hourNMinZero == true { tempRes.append("- 시간, 분이 둘 다 0일 수 없습니다.\n") }
+        if if2_hourZero == true { tempRes.append("- 분으로 설정시 시간 값을 비우십시오.\n") }
+        if if3_foodNameEmpty == true { tempRes.append("- 음식이름은 필수항목입니다.\n") }
+        if if4_ondoZero == true { tempRes.append("- 온도를 0 이상의 값으로 설정하십시오.\n") }
+        
+        let strArr = tempRes.split(separator: "\n")
+        var res: String = ""
+        
+        for (i, obj) in strArr.enumerated() {
+            res.append("\(obj)\(i == strArr.count - 1 ? "" : "\n")")
+        }
+        
+        return res
+    }
+    
     
     override func viewDidLoad() {
         // Do any additional setup after loading the view.
@@ -97,8 +115,8 @@ class AddTimerViewController: UIViewController, UITextFieldDelegate {
     
     @IBAction func addButtonTap(_ sender: Any) {
         // [ㅇ] 유효값 검사 후 반환값이 true일 때만 아래코드 실행
-        let tOrF = showAlert(if1_hourNMinZero, if2_hourZero, if3_foodNameEmpty, if4_ondoZero)
-        if tOrF == true {
+        
+        if [if1_hourNMinZero, if2_hourZero, if3_foodNameEmpty, if4_ondoZero].filter({ $0 == true }).count <= 0 {
             // [ㅇ] 분으로 세팅 ex) 80분 -> 1h 20min, 조건 : 시간이 0이고 분이 60분 이상일 때
                 if let minIf = Int(min), if5_minToH_T == true {
                 let h = minIf / 60 // 60으로 나눈 몫
@@ -111,6 +129,8 @@ class AddTimerViewController: UIViewController, UITextFieldDelegate {
             foodViewModel.addFood(food) // 음식 배열에 추가
             txtField_makeEmpty(txtFields: uiTxtFields) // 문자입력 창 초기화
             showAlert("타이머 추가 완료")
+        } else {
+            showAlert()
         }
     }
 }
@@ -133,21 +153,12 @@ extension AddTimerViewController {
 
 extension AddTimerViewController {
     // MARK: - [ㅇ] 유효성 검사 후 경고창 실행
-    func showAlert(_ if1_hourNMinZero: Bool, _ if2_hourZero: Bool, _ if3_foodNameEmpty: Bool, _ if4_ondoZero: Bool) -> Bool {
-        if (if1_hourNMinZero == true || if2_hourZero == true || if3_foodNameEmpty == true || if4_ondoZero == true ) {
-            var str = String()
-            if if1_hourNMinZero == true { str.append("- 시간, 분이 둘 다 0일 수 없습니다.\n") }
-            if if2_hourZero == true { str.append("- 분으로 설정시 시간 값을 비우십시오.\n") }
-            if if3_foodNameEmpty == true { str.append("- 음식이름은 필수항목입니다.\n") }
-            if if4_ondoZero == true { str.append("- 온도를 0 이상의 값으로 설정하십시오.\n") }
-            
-            let alertController = UIAlertController(title: "확인", message: str, preferredStyle: .alert)
-            
-            let defaultAction = UIAlertAction(title: "닫기", style: .default, handler: nil)
-            alertController.addAction(defaultAction)
-            present(alertController, animated: true, completion: nil)
-            return false
-        } else { return true }
+    func showAlert() {
+        let alertController = UIAlertController(title: "확인", message: str, preferredStyle: .alert)
+        
+        let defaultAction = UIAlertAction(title: "닫기", style: .default, handler: nil)
+        alertController.addAction(defaultAction)
+        present(alertController, animated: true, completion: nil)
     }
     
     // MARK: - [ㅇ] 단순 알림창
