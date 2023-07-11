@@ -87,35 +87,30 @@ class SettingTableViewController: UITableViewController {
     
     func getData(of closedRange: ClosedRange<Int>) {
         //var v1_foodId = 0
-        var v2_foodName = String()
-        var v3_foodType = String()
-        var v4_foodHour = 0
-        var v5_timerOn = false
-        var v6_foodMin = 0
-        var v7_foodOndo = 0
-        var v8_foodTurnNum = 0
-        var count = 0
         
         let ref: DatabaseReference! = Database.database().reference()
         for i in closedRange {
-            ref.child("sample").child(String(i)).observeSingleEvent(of: .value, with: { snapshot in
-                let value = snapshot.value as? NSDictionary
+            ref.child("sample").child(String(i)).observeSingleEvent(of: .value, with: { [weak self] snapshot in
+                guard let `self` = self else { return }
+                
+                let value = snapshot.value as? NSDictionary ?? [:]
                 
                 //v1_foodId = value?["foodId"] as? Int ?? 0
-                v2_foodName = value?["foodName"] as? String ?? "NONE"
-                v3_foodType = value?["foodType"] as? String ?? "NONE"
-                v4_foodHour = value?["hour"] as? Int ?? 0
-                v5_timerOn = value?["isTimerOn"] as? Bool ?? false
-                v6_foodMin = value?["min"] as? Int ?? 0
-                v7_foodOndo = value?["ondo"] as? Int ?? 0
-                v8_foodTurnNum = value?["turningFood"] as? Int ?? 0
+                let v2_foodName     = value["foodName"] as? String ?? "NONE"
+                let v3_foodType     = value["foodType"] as? String ?? "NONE"
+                let v4_foodHour     = value["hour"] as? Int ?? 0
+                let v5_timerOn      = value["isTimerOn"] as? Bool ?? false
+                let v6_foodMin      = value["min"] as? Int ?? 0
                 
-                count += 1
-                let food: Food = self.foodViewModel.manager.createFood(ondo: v7_foodOndo, hour: v4_foodHour, min: v6_foodMin, turn: v8_foodTurnNum, foodType: v3_foodType, isTimerOn: v5_timerOn, foodName: v2_foodName)
+                let v7_foodOndo     = value["ondo"] as? Int ?? 0
+                let v8_foodTurnNum  = value["turningFood"] as? Int ?? 0
+                let created         = self.currentTime()
+                
+                let food: Food = self.foodViewModel.manager.createFood(ondo: v7_foodOndo, hour: v4_foodHour, min: v6_foodMin, turn: v8_foodTurnNum, foodType: v3_foodType, isTimerOn: v5_timerOn, foodName: v2_foodName, created: created)
                 
                 self.foodViewModel.addFood(food)
-                print("\n------> [ 함수실행 ] add getData : \(count)\n------> [ 타이머 전체 수 ] foodsArr current count : \(self.foodViewModel.foods.count) ")
             })
+            print("\n--> [ 함수실행 ] add getData : \n---> [ 타이머 전체 수 ] foodsArr current count : \(self.foodViewModel.foods.count) ")
         }
     }
     
@@ -267,4 +262,15 @@ enum stType: Int {
 class idxSwitch: UISwitch {
     var idx: (hide: Int, tag: Int) = (0, 0)
     var tit: String = ""
+}
+
+extension UIViewController {
+    func currentTime() -> String {
+        let now = Date()
+        let dateFormatter = DateFormatter()
+        
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        
+        return dateFormatter.string(from: now)
+    }
 }

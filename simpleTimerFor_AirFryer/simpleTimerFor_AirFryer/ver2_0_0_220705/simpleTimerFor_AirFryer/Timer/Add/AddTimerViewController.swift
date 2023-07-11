@@ -125,7 +125,9 @@ class AddTimerViewController: UIViewController, UITextFieldDelegate {
             }
             
             let foodType: String = btnSenderTxt == "NONE" ? "기타" : btnSenderTxt
-            let food: Food = FoodManager.shared.createFood(ondo: Int(ondo)!, hour: Int(hour)!, min: Int(min)!, turn: Int(turn)!, foodType: foodType, isTimerOn: false, foodName: foodName)
+            let created: String = currentTime()
+            
+            let food: Food = FoodManager.shared.createFood(ondo: Int(ondo)!, hour: Int(hour)!, min: Int(min)!, turn: Int(turn)!, foodType: foodType, isTimerOn: false, foodName: foodName, created: created)
             foodViewModel.addFood(food) // 음식 배열에 추가
             txtField_makeEmpty(txtFields: uiTxtFields) // 문자입력 창 초기화
             showAlert("타이머 추가 완료")

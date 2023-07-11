@@ -164,6 +164,7 @@ extension EditTimerViewController {
             tmpFood?.min = Int(min)!
             tmpFood?.turningFood = Int(turn)!
             tmpFood?.foodType = foodType
+            tmpFood?.created = currentTime()
             
             guard let index = tmpFood?.foodId else { return }
             for i in foodViewModel.foods {
