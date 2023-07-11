@@ -9,13 +9,45 @@ import UIKit
 import Firebase
 
 class SettingTableViewController: UITableViewController {
-    let foodViewModel = FoodViewModel()
     
+    
+    // MARK: =================== IBOutlet ===================
     @IBOutlet weak var downSample: UISwitch! // 토글스위치 - 서버 데이터 다운
     @IBOutlet weak var delFoodsAll: UISwitch! // 토글스위치 - 타이머 전체삭제
     
     // [] 버전정보
     @IBOutlet weak var versionDescription: UILabel!
+    
+    
+    // MARK: =================== Variables ===================
+    let foodViewModel = FoodViewModel()
+    var tblArr: [[String: Any]] = [
+        [
+            "header" : "login".uppercased(),
+            "cells" : [
+                ["title" : "Google", "type": stType.btn, "action": {}],
+                ["title" : "Apple", "type": stType.btn, "action": {}],
+            ]
+        ],
+        
+        [
+            "header" : "user info".uppercased(),
+            "cells" : [
+                ["title" : "user name", "type": stType.hide, "action": {}],
+                ["title" : "email", "type": stType.hide, "action": {}],
+                ["title" : "phone number", "type": stType.hide, "action": {}],
+            ]
+        ],
+        
+        [
+            "header" : "settings".uppercased(),
+            "cells" : [
+                ["title" : "서버에서 샘플받기", "type": stType.swch, "action": {}],
+                ["title" : "타이머 전체 삭제", "type": stType.swch, "action": {}],
+                ["title" : "버전 정보", "type": stType.lbl, "action": {}],
+            ]
+        ]
+    ]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -115,6 +147,65 @@ class SettingTableViewController: UITableViewController {
         print("삭제 X : \(foodViewModel.foods.count)")
         delFoodsAll.isOn = false
     }
+    
+    
+    // MARK: =================== tableView ===================
+    
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        let title = tblArr[section]["header"] as? String ?? ""
+        
+        return title
+    }
+    override func numberOfSections(in tableView: UITableView) -> Int {
+        return tblArr.count
+    }
+    
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if let cells = tblArr[section]["cells"] as? [[String: Any]] {
+            return cells.count
+            
+        } else {
+            return 0
+        }
+    }
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "settingTVC", for: indexPath) as! settingTVC
+        if let obj = tblArr[indexPath.section]["cells"] as? [[String: Any]] {
+            let ithObj          = obj[indexPath.row]
+            
+            let tit: String     = ithObj["title"] as? String ?? ""
+            let type: stType    = ithObj["type"] as? stType ?? .hide
+            
+            cell.setView(obj: (title: tit, type: type))
+        }
+        return cell
+    }
 }
 
+class settingTVC: UITableViewCell {
+    
+    @IBOutlet weak var lbl_title: UILabel!
+    
+    @IBOutlet weak var lbl_desc: UILabel!
+    @IBOutlet weak var swch: UISwitch!
+    @IBOutlet weak var btn_right: UIButton!
+    
+    
+    func setView(obj: (title: String, type: stType)) {
+        for (i, viewObj) in [lbl_desc, swch, btn_right].enumerated() {
+            viewObj?.tag = i + 1
+            viewObj?.isHidden = obj.type.rawValue != viewObj?.tag
+        }
+        
+        lbl_title.text = obj.title
+    }
+    
+}
 
+enum stType: Int {
+    case `hide` = 0
+    case lbl = 1
+    case swch = 2
+    case btn = 3
+}
