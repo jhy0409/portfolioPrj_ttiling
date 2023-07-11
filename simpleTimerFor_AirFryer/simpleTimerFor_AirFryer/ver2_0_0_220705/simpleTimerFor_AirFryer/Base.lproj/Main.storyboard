@@ -530,8 +530,8 @@
                                             <rect key="frame" x="16" y="0.0" width="342" height="55"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="249" verticalHuggingPriority="251" horizontalCompressionResistancePriority="748" text="서버에서 샘플받기" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ctw-hh-k3B">
-                                                    <rect key="frame" x="0.0" y="16" width="272" height="23"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="19"/>
+                                                    <rect key="frame" x="0.0" y="17" width="272" height="21.5"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
@@ -545,13 +545,13 @@
                                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9D1-2J-Rls">
                                                     <rect key="frame" x="282" y="0.0" width="60" height="55"/>
                                                     <subviews>
-                                                        <switch hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="XkH-JJ-FFP">
+                                                        <switch hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="XkH-JJ-FFP" customClass="idxSwitch" customModule="ttiling" customModuleProvider="target">
                                                             <rect key="frame" x="11" y="12" width="51" height="31"/>
                                                             <color key="onTintColor" systemColor="systemBlueColor"/>
                                                         </switch>
                                                         <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="v1.0" textAlignment="right" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Hf7-nf-d3w">
                                                             <rect key="frame" x="0.0" y="0.0" width="60" height="55"/>
-                                                            <fontDescription key="fontDescription" type="system" pointSize="19"/>
+                                                            <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                                             <color key="textColor" systemColor="secondaryLabelColor"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
@@ -599,65 +599,9 @@
                                     <outlet property="lbl_desc" destination="Hf7-nf-d3w" id="RB8-b1-TgL"/>
                                     <outlet property="lbl_title" destination="Ctw-hh-k3B" id="5q5-Kj-gGk"/>
                                     <outlet property="swch" destination="XkH-JJ-FFP" id="6IL-qU-DeD"/>
+                                    <outlet property="viewRhtAccWidth" destination="W9O-Qp-bYp" id="fHa-0p-uNh"/>
+                                    <outlet property="viewRhtContainer" destination="9D1-2J-Rls" id="e54-VG-JsJ"/>
                                 </connections>
-                            </tableViewCell>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="09z-sX-d1j">
-                                <rect key="frame" x="20" y="110.5" width="374" height="55"/>
-                                <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="09z-sX-d1j" id="51F-Dy-Dd7">
-                                    <rect key="frame" x="0.0" y="0.0" width="374" height="55"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                    <subviews>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="타이머 전체 삭제" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TzR-iO-71Z">
-                                            <rect key="frame" x="20" y="16" width="354" height="23"/>
-                                            <fontDescription key="fontDescription" type="system" pointSize="19"/>
-                                            <nil key="textColor"/>
-                                            <nil key="highlightedColor"/>
-                                        </label>
-                                        <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="zaU-Md-Wr6">
-                                            <rect key="frame" x="305" y="12" width="51" height="31"/>
-                                            <color key="onTintColor" systemColor="systemBlueColor"/>
-                                        </switch>
-                                    </subviews>
-                                    <constraints>
-                                        <constraint firstAttribute="trailing" secondItem="TzR-iO-71Z" secondAttribute="trailing" id="5iP-it-VMW"/>
-                                        <constraint firstAttribute="trailing" secondItem="zaU-Md-Wr6" secondAttribute="trailing" constant="20" id="95k-DU-LFu"/>
-                                        <constraint firstItem="TzR-iO-71Z" firstAttribute="leading" secondItem="51F-Dy-Dd7" secondAttribute="leading" constant="20" id="PE6-MH-Oig"/>
-                                        <constraint firstItem="TzR-iO-71Z" firstAttribute="centerY" secondItem="51F-Dy-Dd7" secondAttribute="centerY" id="dnx-KU-CUO"/>
-                                        <constraint firstItem="zaU-Md-Wr6" firstAttribute="centerY" secondItem="51F-Dy-Dd7" secondAttribute="centerY" id="oZp-xs-IaR"/>
-                                    </constraints>
-                                </tableViewCellContentView>
-                            </tableViewCell>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="9Tp-ZM-icR">
-                                <rect key="frame" x="20" y="165.5" width="374" height="55"/>
-                                <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="9Tp-ZM-icR" id="u8L-k2-nNh">
-                                    <rect key="frame" x="0.0" y="0.0" width="374" height="55"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                    <subviews>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="버전정보" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="N0L-oi-rfZ">
-                                            <rect key="frame" x="20" y="16" width="66" height="23"/>
-                                            <fontDescription key="fontDescription" type="system" pointSize="19"/>
-                                            <nil key="textColor"/>
-                                            <nil key="highlightedColor"/>
-                                        </label>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="v1.0" textAlignment="right" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0c9-ko-RQs">
-                                            <rect key="frame" x="274" y="16" width="80" height="23"/>
-                                            <constraints>
-                                                <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="80" id="qSd-Ej-2sh"/>
-                                            </constraints>
-                                            <fontDescription key="fontDescription" type="system" pointSize="19"/>
-                                            <color key="textColor" systemColor="secondaryLabelColor"/>
-                                            <nil key="highlightedColor"/>
-                                        </label>
-                                    </subviews>
-                                    <constraints>
-                                        <constraint firstAttribute="trailing" secondItem="0c9-ko-RQs" secondAttribute="trailing" constant="20" symbolic="YES" id="9jb-UW-KRT"/>
-                                        <constraint firstItem="0c9-ko-RQs" firstAttribute="centerY" secondItem="u8L-k2-nNh" secondAttribute="centerY" id="XQf-nD-ao2"/>
-                                        <constraint firstItem="N0L-oi-rfZ" firstAttribute="centerY" secondItem="u8L-k2-nNh" secondAttribute="centerY" id="sWo-Dt-DDo"/>
-                                        <constraint firstItem="N0L-oi-rfZ" firstAttribute="leading" secondItem="u8L-k2-nNh" secondAttribute="leading" constant="20" id="y3f-Xf-iGw"/>
-                                    </constraints>
-                                </tableViewCellContentView>
                             </tableViewCell>
                         </prototypes>
                         <sections/>

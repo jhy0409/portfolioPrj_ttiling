@@ -42,9 +42,9 @@ class SettingTableViewController: UITableViewController {
         [
             "header" : "settings".uppercased(),
             "cells" : [
-                ["title" : "서버에서 샘플받기", "type": stType.swch, "action": {}],
-                ["title" : "타이머 전체 삭제", "type": stType.swch, "action": {}],
-                ["title" : "버전 정보", "type": stType.lbl, "action": {}],
+                ["title" : "서버에서 샘플받기", "type": stType.swch, "isOn": false, "action": {}],
+                ["title" : "타이머 전체 삭제", "type": stType.swch, "isOn": false, "action": {}],
+                ["title" : "버전 정보", "type": stType.lbl, "rightDesc": "versionStr", "action": {}],
             ]
         ]
     ]
@@ -55,10 +55,10 @@ class SettingTableViewController: UITableViewController {
     }
     
     // [ㅇ] firebase에서 내려받기
-    @IBAction func downToggle(_ sender: Any) {
+    @objc func downToggle(_ sender: idxSwitch) {
         // [ㅇ] toggle버튼 ON -> 기본 json file 다운로드
-        if downSample.isOn == true {
-            downSample.isEnabled = false // 다운시작 - 비활성화
+        if sender.isOn == true {
+            sender.isEnabled = false // 다운시작 - 비활성화
             print("\n---> [설정창 스위치 - On] 서버데이터 받기 toggle")
             let tmpRange = 0...18
             getData(of: tmpRange)
@@ -66,21 +66,22 @@ class SettingTableViewController: UITableViewController {
             // [ㅇ] 다운완료 알림창
             // [] 다운 후 객체 정렬
             showAlert("알림","다운로드가 완료되었습니다.", {
-                self.downSample.isEnabled = true // 다운완료 후 동작 - 스위치 끄기
-                self.downSample.isOn = false
+                sender.isEnabled = true // 다운완료 후 동작 - 스위치 끄기
+                sender.isOn = false
             })
         }
     }
     
-    @IBAction func delAllFoodArr(_ sender: Any) { // 스위치 함수 - 서버데이터 전체삭제
-        if delFoodsAll.isOn {
+    
+    @objc func delAllFoodArr(_ sender: idxSwitch) { // 스위치 함수 - 서버데이터 전체삭제
+        if sender.isOn {
             // [ㅇ] foods Arr 갯수가 0이면 return
             if foodViewModel.foods.count == 0 {
-                showAlert("알림", "저장된 타이머가 없습니다.", { self.delFoodsAll.isOn = false })
+                showAlert("알림", "저장된 타이머가 없습니다.", { sender.isOn = false })
                 return
             }
             print("\n---> [설정창 스위치 - On] 모든 데이터를 삭제합니다.")
-            deleteAlert("경고","저장된 모든 타이머를 삭제하시겠습니까?")
+            deleteAlert("경고","저장된 모든 타이머를 삭제하시겠습니까?", sender)
         }
     }
     
@@ -127,25 +128,25 @@ class SettingTableViewController: UITableViewController {
         present(alertController, animated: true, completion: nil)
     }
     
-    func deleteAlert(_ title: String, _ strMsg: String) {
+    func deleteAlert(_ title: String, _ strMsg: String, _ swch: idxSwitch) {
         let alertController = UIAlertController(title: title, message: strMsg, preferredStyle: .alert)
         
-        let yes = UIAlertAction(title: "네", style: .default, handler: { _ in self.yesClick() })
+        let yes = UIAlertAction(title: "네", style: .default, handler: { _ in self.yesClick(swch) })
         alertController.addAction(yes)
-        let no = UIAlertAction(title: "아니오", style: .default, handler: { _ in self.noClick() })
+        let no = UIAlertAction(title: "아니오", style: .default, handler: { _ in self.noClick(swch) })
         alertController.addAction(no)
         present(alertController, animated: true, completion: nil)
     }
     
-    func yesClick() {
+    func yesClick(_ sender: idxSwitch) {
         foodViewModel.deleteAllFoods()
         print("삭제 ㅇ : \(foodViewModel.foods.count)")
-        delFoodsAll.isOn = false
+        sender.isOn = false
     }
     
-    func noClick() {
+    func noClick(_ sender: idxSwitch) {
         print("삭제 X : \(foodViewModel.foods.count)")
-        delFoodsAll.isOn = false
+        sender.isOn = false
     }
     
     
@@ -171,34 +172,87 @@ class SettingTableViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "settingTVC", for: indexPath) as! settingTVC
+        cell.tag = indexPath.row
+        
         if let obj = tblArr[indexPath.section]["cells"] as? [[String: Any]] {
             let ithObj          = obj[indexPath.row]
             
             let tit: String     = ithObj["title"] as? String ?? ""
             let type: stType    = ithObj["type"] as? stType ?? .hide
+            let isOn: Bool      = ithObj["isOn"] as? Bool ?? false
+            let rgDesc: String  = ithObj["rightDesc"] as? String ?? ""
             
-            cell.setView(obj: (title: tit, type: type))
+            cell.setView(obj: (title: tit, type: type, isOn: isOn, rightDesc: rgDesc))
+            cell.swch.tit = tit
+            
+            if let idx = ["샘플받기", "삭제"].filter ({ (cell.swch.tit).lowercased().contains( $0.lowercased() ) }).first {
+                
+                switch idx {
+                case "샘플받기":
+                    cell.swch.addTarget(self, action: #selector(downToggle), for: .touchUpInside)
+                    
+                case "삭제":
+                    print("삭제")
+                    cell.swch.addTarget(self, action: #selector(delAllFoodArr), for: .touchUpInside)
+                    
+                default:
+                    break
+                }
+            }
+            
         }
+        
         return cell
     }
+    
+    
 }
 
 class settingTVC: UITableViewCell {
     
     @IBOutlet weak var lbl_title: UILabel!
     
+    @IBOutlet weak var viewRhtContainer: UIView!
+    @IBOutlet weak var viewRhtAccWidth: NSLayoutConstraint!
+    
     @IBOutlet weak var lbl_desc: UILabel!
-    @IBOutlet weak var swch: UISwitch!
+    @IBOutlet weak var swch: idxSwitch!
     @IBOutlet weak var btn_right: UIButton!
     
     
-    func setView(obj: (title: String, type: stType)) {
-        for (i, viewObj) in [lbl_desc, swch, btn_right].enumerated() {
-            viewObj?.tag = i + 1
-            viewObj?.isHidden = obj.type.rawValue != viewObj?.tag
+    func setView(obj: (title: String, type: stType, isOn: Bool, rightDesc: String )) {
+        let views: [UIView] = [lbl_desc, swch, btn_right]
+        
+        for (i, viewObj) in views.enumerated() {
+            viewObj.tag                 = i + 1
+            viewObj.isHidden            = obj.type.rawValue != viewObj.tag
+            viewRhtContainer.isHidden   = obj.type == .hide
+            
+            switch viewObj {
+            case swch:
+                swch.idx = (viewObj.tag, tag)
+            
+            default:
+                break
+            }
         }
         
-        lbl_title.text = obj.title
+        if let visView = views.filter({ !$0.isHidden }).first {
+            switch visView {
+            case lbl_desc:
+                let lblWidth: CGFloat = (obj.rightDesc as NSString).size(withAttributes: [NSAttributedString.Key.font : lbl_desc.font as Any]).width
+                viewRhtAccWidth.constant = lblWidth > 100 ? 100 : lblWidth
+                
+            default:
+                viewRhtAccWidth.constant = visView.frame.width
+            }
+        }
+        
+        
+        lbl_title.text  = obj.title
+
+        lbl_desc.text   = obj.rightDesc
+        swch.isOn       = obj.isOn
     }
     
 }
@@ -208,4 +262,9 @@ enum stType: Int {
     case lbl = 1
     case swch = 2
     case btn = 3
+}
+
+class idxSwitch: UISwitch {
+    var idx: (hide: Int, tag: Int) = (0, 0)
+    var tit: String = ""
 }
