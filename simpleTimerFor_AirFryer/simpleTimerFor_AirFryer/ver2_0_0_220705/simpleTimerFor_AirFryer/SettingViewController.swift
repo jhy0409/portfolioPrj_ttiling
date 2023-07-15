@@ -21,11 +21,11 @@ class SettingTableViewController: UITableViewController, fVmodel {
     
     // MARK: =================== Variables ===================
     
-    var tblArr: [[String: Any]] = [
+    lazy var tblArr: [[String: Any]] = [
         [
             "header" : "login".uppercased(),
             "cells" : [
-                ["title" : "Google", "type": stType.btn, "action": {}],
+                ["title" : "Google", "type": stType.btn, "action": {}] as [String : Any],
                 ["title" : "Apple", "type": stType.btn, "action": {}],
             ]
         ],
@@ -33,21 +33,31 @@ class SettingTableViewController: UITableViewController, fVmodel {
         [
             "header" : "user info".uppercased(),
             "cells" : [
-                ["title" : "user name", "type": stType.hide, "action": {}],
-                ["title" : "email", "type": stType.hide, "action": {}],
-                ["title" : "phone number", "type": stType.hide, "action": {}],
+                ["title" : "user name", "type": stType.lbl, "rightDesc": "-", "action": {}] as [String : Any],
+                ["title" : "email", "type": stType.lbl, "rightDesc": "-", "action": {}],
+                ["title" : "phone number", "type": stType.lbl, "rightDesc": "-", "action": {}]
+                //["title" : "phone number", "type": stType.hide, "action": {}],
             ]
         ],
         
         [
             "header" : "settings".uppercased(),
             "cells" : [
-                ["title" : "서버에서 샘플받기", "type": stType.swch, "isOn": false, "action": {}],
+                ["title" : "서버에서 샘플받기", "type": stType.swch, "isOn": false, "action": {}] as [String : Any],
                 ["title" : "타이머 전체 삭제", "type": stType.swch, "isOn": false, "action": {}],
-                ["title" : "버전 정보", "type": stType.lbl, "rightDesc": "versionStr", "action": {}],
+                ["title" : "버전 정보", "type": stType.lbl, "rightDesc": "\(self.versionStr)", "action": {}],
             ]
         ]
     ]
+    
+    /// v 버전정보 (빌드)
+    var versionStr: String {
+        guard let dict = Bundle.main.infoDictionary,
+              let version = dict["CFBundleShortVersionString"] as? String,
+              let build = dict["CFBundleVersion"] as? String else { return "" }
+        
+        return "v \(version) (\(build))"
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()

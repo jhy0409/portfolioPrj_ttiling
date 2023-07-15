@@ -7,7 +7,7 @@
 
 import UIKit
 
-class AddTimerViewController: UIViewController, UITextFieldDelegate {
+class AddTimerViewController: UIViewController, UITextFieldDelegate, fVmodel {
     @IBOutlet weak var foodNameTxt: UITextField!
     @IBOutlet weak var ondoTxt: UITextField!
     @IBOutlet weak var hourTxt: UITextField!
@@ -32,7 +32,7 @@ class AddTimerViewController: UIViewController, UITextFieldDelegate {
     var foodBtnType: (() -> String)?
     static let uiLabelColorArr = [#colorLiteral(red: 1, green: 0, blue: 0, alpha: 0.2), #colorLiteral(red: 0.9254902005, green: 0.2352941185, blue: 0.1019607857, alpha: 0.2), #colorLiteral(red: 0.9686274529, green: 0.78039217, blue: 0.3450980484, alpha: 0.2), #colorLiteral(red: 0.3411764801, green: 0.6235294342, blue: 0.1686274558, alpha: 0.2), #colorLiteral(red: 0.2392156869, green: 0.6745098233, blue: 0.9686274529, alpha: 0.2), #colorLiteral(red: 0.2196078449, green: 0.2030190556, blue: 0.8549019694, alpha: 0.2), #colorLiteral(red: 0.5, green: 0.007843137719, blue: 0.4200693323, alpha: 0.2)]
     var uiTxtFields = [UITextField]()
-    let foodViewModel = FoodViewModel.shared
+    
     var btnSenderTxt: String {
         return foodTypeArr.filter { (type: String, isSelected: Bool) in
             isSelected == true
@@ -128,7 +128,7 @@ class AddTimerViewController: UIViewController, UITextFieldDelegate {
             let created: String = currentTime()
             
             let food: Food = FoodManager.shared.createFood(ondo: Int(ondo)!, hour: Int(hour)!, min: Int(min)!, turn: Int(turn)!, foodType: foodType, isTimerOn: false, foodName: foodName, created: created)
-            foodViewModel.addFood(food) // 음식 배열에 추가
+            foodShared.addFood(food) // 음식 배열에 추가
             txtField_makeEmpty(txtFields: uiTxtFields) // 문자입력 창 초기화
             showAlert("타이머 추가 완료")
         } else {
