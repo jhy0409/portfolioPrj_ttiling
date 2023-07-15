@@ -8,7 +8,7 @@
 import UIKit
 import Firebase
 
-class SettingTableViewController: UITableViewController {
+class SettingTableViewController: UITableViewController, fVmodel {
     
     
     // MARK: =================== IBOutlet ===================
@@ -20,7 +20,7 @@ class SettingTableViewController: UITableViewController {
     
     
     // MARK: =================== Variables ===================
-    let foodViewModel = FoodViewModel()
+    
     var tblArr: [[String: Any]] = [
         [
             "header" : "login".uppercased(),
@@ -51,7 +51,6 @@ class SettingTableViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        foodViewModel.loadFoods()
     }
     
     // [ㅇ] firebase에서 내려받기
@@ -60,15 +59,23 @@ class SettingTableViewController: UITableViewController {
         if sender.isOn == true {
             sender.isEnabled = false // 다운시작 - 비활성화
             print("\n---> [설정창 스위치 - On] 서버데이터 받기 toggle")
-            let tmpRange = 0...18
-            getData(of: tmpRange)
             
-            // [ㅇ] 다운완료 알림창
-            // [] 다운 후 객체 정렬
-            showAlert("알림","다운로드가 완료되었습니다.", {
-                sender.isEnabled = true // 다운완료 후 동작 - 스위치 끄기
-                sender.isOn = false
-            })
+            getData(of:  0...17) {
+                DispatchQueue.main.async {
+                
+                    print("\n--> [ 함수실행 ] add getData : \n---> [ 타이머 전체 수 ] foodsArr current count : \(self.foodShared.manager.foods.count) ")
+                    
+                    // [ㅇ] 다운완료 알림창
+                    // [] 다운 후 객체 정렬
+                    self.showAlert("알림","다운로드가 완료되었습니다.", {
+                        sender.isEnabled = true // 다운완료 후 동작 - 스위치 끄기
+                        sender.isOn = false
+                    })
+                }
+                
+            }
+            
+           
         }
     }
     
@@ -76,7 +83,7 @@ class SettingTableViewController: UITableViewController {
     @objc func delAllFoodArr(_ sender: idxSwitch) { // 스위치 함수 - 서버데이터 전체삭제
         if sender.isOn {
             // [ㅇ] foods Arr 갯수가 0이면 return
-            if foodViewModel.foods.count == 0 {
+            if foodShared.foods.count == 0 {
                 showAlert("알림", "저장된 타이머가 없습니다.", { sender.isOn = false })
                 return
             }
@@ -85,7 +92,7 @@ class SettingTableViewController: UITableViewController {
         }
     }
     
-    func getData(of closedRange: ClosedRange<Int>) {
+    func getData(of closedRange: ClosedRange<Int>, _ completion: (()->Void)? = nil ) {
         //var v1_foodId = 0
         
         let ref: DatabaseReference! = Database.database().reference()
@@ -106,12 +113,15 @@ class SettingTableViewController: UITableViewController {
                 let v8_foodTurnNum  = value["turningFood"] as? Int ?? 0
                 let created         = self.currentTime()
                 
-                let food: Food = self.foodViewModel.manager.createFood(ondo: v7_foodOndo, hour: v4_foodHour, min: v6_foodMin, turn: v8_foodTurnNum, foodType: v3_foodType, isTimerOn: v5_timerOn, foodName: v2_foodName, created: created)
+                let food: Food = self.foodShared.manager.createFood(ondo: v7_foodOndo, hour: v4_foodHour, min: v6_foodMin, turn: v8_foodTurnNum, foodType: v3_foodType, isTimerOn: v5_timerOn, foodName: v2_foodName, created: created)
                 
-                self.foodViewModel.addFood(food)
+                self.foodShared.addFood(food, isLast: i == closedRange.upperBound, completion: completion)
+               
             })
-            print("\n--> [ 함수실행 ] add getData : \n---> [ 타이머 전체 수 ] foodsArr current count : \(self.foodViewModel.foods.count) ")
+            
+            
         }
+        
     }
     
     func showAlert(_ title: String, _ strMsg: String, _ completion: (()->())? ) {
@@ -134,13 +144,13 @@ class SettingTableViewController: UITableViewController {
     }
     
     func yesClick(_ sender: idxSwitch) {
-        foodViewModel.deleteAllFoods()
-        print("삭제 ㅇ : \(foodViewModel.foods.count)")
+        foodShared.deleteAllFoods()
+        print("삭제 ㅇ : \(foodShared.foods.count)")
         sender.isOn = false
     }
     
     func noClick(_ sender: idxSwitch) {
-        print("삭제 X : \(foodViewModel.foods.count)")
+        print("삭제 X : \(foodShared.foods.count)")
         sender.isOn = false
     }
     
@@ -272,5 +282,16 @@ extension UIViewController {
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
         
         return dateFormatter.string(from: now)
+    }
+}
+
+
+protocol fVmodel {
+    var foodShared: FoodViewModel { get }
+}
+
+extension fVmodel {
+    var foodShared: FoodViewModel {
+        get { return FoodViewModel.shared }
     }
 }

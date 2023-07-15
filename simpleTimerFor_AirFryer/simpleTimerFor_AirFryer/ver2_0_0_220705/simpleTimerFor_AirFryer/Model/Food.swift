@@ -67,6 +67,13 @@ class FoodManager {
          saveFood()
     }
     
+    func addFood(_ food: Food, isLast: Bool, completion: (()->Void)? = nil) {
+        foods.append(food)
+        if isLast {
+            saveFood(completion)
+        }
+    }
+    
     func deleteFood(_ food: Food) {
         foods = foods.filter{ $0.foodId != food.foodId }
          saveFood()
@@ -81,6 +88,10 @@ class FoodManager {
     
     func saveFood() {
         Storage.store(foods, to: .documents, as: "foods.json")
+    }
+    
+    func saveFood(_ completion: (()->Void)? = nil) {
+        Storage.store(foods, to: .documents, as: "foods.json", completion)
     }
     
     func retrieveFood() {
@@ -115,6 +126,10 @@ class FoodViewModel {
     
     func addFood(_ food: Food) {
         manager.addFood(food)
+    }
+    
+    func addFood(_ food: Food, isLast: Bool, completion: (()->Void)? = nil ) {
+        manager.addFood(food, isLast: isLast, completion: completion)
     }
     
     func deleteFood(_ food: Food) {

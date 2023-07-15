@@ -33,7 +33,7 @@ public class Storage {
     // FOOD: Codable encode 설명
     // FOOD: Data 타입은 파일 형태로 저장 가능
     
-    static func store<T: Encodable>(_ obj: T, to directory: Directory, as fileName: String) {
+    static func store<T: Encodable>(_ obj: T, to directory: Directory, as fileName: String, _ competion: (()->Void)? = nil ) {
         let url = directory.url.appendingPathComponent(fileName, isDirectory: false)
         print("---> save to here: \(url)")
         let encoder = JSONEncoder()
@@ -45,6 +45,8 @@ public class Storage {
                 try FileManager.default.removeItem(at: url)
             }
             FileManager.default.createFile(atPath: url.path, contents: data, attributes: nil)
+            competion?()
+            
         } catch let error {
             print("---> Failed to store msg: \(error.localizedDescription)")
         }
