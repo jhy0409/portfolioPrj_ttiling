@@ -106,10 +106,11 @@ extension AFTimerViewController: UICollectionViewDataSource {
 // [ㅇ] 콜렉션뷰 레이아웃
 extension AFTimerViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let itemSpacing: CGFloat = 10
-        let margin: CGFloat = 20
+        let itemSpacing: CGFloat = 15
+        let margin: CGFloat = 18 
         let width = (collectionView.bounds.width - itemSpacing - (margin * 2)) / 2
-        let height = width + 150
+        //let height = width + 150
+        let height: CGFloat = 340
         return CGSize(width: width, height: height)
     }
     

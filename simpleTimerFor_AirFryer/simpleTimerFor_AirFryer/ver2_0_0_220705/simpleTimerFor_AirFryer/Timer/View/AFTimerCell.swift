@@ -142,10 +142,10 @@ extension AFTimerCell {
         layer.cornerRadius = cornerRadius // Set masks to bounds to false to avoid the shadow
         layer.masksToBounds = false // from being clipped to the corner radius
         
-        layer.shadowRadius = 8.0 // Apply a shadow
+        layer.shadowRadius = 6.0 // Apply a shadow
         layer.shadowOpacity = 0.10
         layer.shadowColor = UIColor.black.cgColor
-        layer.shadowOffset = CGSize(width: 0, height: 5)
+        layer.shadowOffset = CGSize(width: 0, height: 3)
     }
     
     override func layoutSubviews() {

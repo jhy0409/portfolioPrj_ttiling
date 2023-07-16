@@ -8,6 +8,11 @@
 import UIKit
 
 class AddTimerViewController: UIViewController, UITextFieldDelegate, fVmodel {
+    
+    
+    // MARK: ------------------- IBOutlets -------------------
+    @IBOutlet weak var containerView: UIScrollView!
+    
     @IBOutlet weak var foodNameTxt: UITextField!
     @IBOutlet weak var ondoTxt: UITextField!
     @IBOutlet weak var hourTxt: UITextField!
@@ -24,6 +29,9 @@ class AddTimerViewController: UIViewController, UITextFieldDelegate, fVmodel {
     @IBOutlet weak var addButton: UIButton!
     
     @IBOutlet weak var cvFoodType: UICollectionView!
+    
+    
+    // MARK: ------------------- Variables -------------------
     
     var foodTypeArr: [(type: String, isSelected: Bool)] = [
         ("고기", true), ("과자", false), ("냉동식품", false),
@@ -105,13 +113,21 @@ class AddTimerViewController: UIViewController, UITextFieldDelegate, fVmodel {
     }
     
     
+    // MARK: ------------------- View Life Cycle -------------------
+    
     override func viewDidLoad() {
         // Do any additional setup after loading the view.
         super.viewDidLoad()
         uiTxtFields = [foodNameTxt, ondoTxt, hourTxt, minTxt, turnTimeTxt ]
         
         cvFoodType.reloadData()
+        
+        let tapG: UITapGestureRecognizer = .init(target: self, action: #selector(endEdit))
+        containerView.addGestureRecognizer(tapG)
     }
+    
+    
+    // MARK: ------------------- IBAction functions -------------------
     
     @IBAction func addButtonTap(_ sender: Any) {
         // [ㅇ] 유효값 검사 후 반환값이 true일 때만 아래코드 실행
@@ -135,6 +151,15 @@ class AddTimerViewController: UIViewController, UITextFieldDelegate, fVmodel {
             showAlert()
         }
     }
+    
+    
+    // MARK: ------------------- function -------------------
+    @objc func endEdit(_ sender: UITapGestureRecognizer) {
+        print("--> 컨테이너 스크롤뷰 탭, 입력종료 / func endEdit")
+        view.endEditing(true)
+    }
+    
+    
 }
 
 extension AddTimerViewController {
