@@ -134,11 +134,11 @@ class AddTimerViewController: UIViewController, UITextFieldDelegate, fVmodel {
         
         if [if1_hourNMinZero, if2_hourZero, if3_foodNameEmpty, if4_ondoZero].filter({ $0 == true }).count <= 0 {
             // [ㅇ] 분으로 세팅 ex) 80분 -> 1h 20min, 조건 : 시간이 0이고 분이 60분 이상일 때
-                if let minIf = Int(min), if5_minToH_T == true {
-                let h = minIf / 60 // 60으로 나눈 몫
-                let m = minIf % 60 // 60으로 나눈 나머지
-                //hour = String(h); min = String(m)
-            }
+            //if let minIf = Int(min), if5_minToH_T == true {
+            //    let h = minIf / 60 // 60으로 나눈 몫
+            //    let m = minIf % 60 // 60으로 나눈 나머지
+            //    hour = String(h); min = String(m)
+            //}
             
             let foodType: String = btnSenderTxt == "NONE" ? "기타" : btnSenderTxt
             let created: String = currentTime()

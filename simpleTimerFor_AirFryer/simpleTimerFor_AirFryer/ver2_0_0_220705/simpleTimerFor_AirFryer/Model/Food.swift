@@ -79,11 +79,11 @@ class FoodManager {
          saveFood()
     }
     
-    func updateFood(_ food: Food) {
+    func updateFood(_ food: Food, completion: (()->Void)? = nil) {
         guard let index = foods.firstIndex(of: food) else { return }
         print("\n [func updateFood] currunt index is ---->\(index)")
         foods[index].update(ondo: food.ondo, hour: food.hour, min: food.min, turn: food.turningFood, foodType: food.foodType, isTimerOn: food.isTimerOn, foodName: food.foodName)
-         saveFood()
+         saveFood(completion)
     }
     
     func saveFood() {
@@ -136,8 +136,8 @@ class FoodViewModel {
         manager.deleteFood(food)
     }
     
-    func updateFood(_ food: Food) {
-        manager.updateFood(food)
+    func updateFood(_ food: Food, completion: (()->Void)? = nil) {
+        manager.updateFood(food, completion: completion)
     }
     
     func loadFoods() {
