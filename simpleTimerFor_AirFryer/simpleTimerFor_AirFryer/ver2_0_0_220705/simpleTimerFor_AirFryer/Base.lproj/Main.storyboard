@@ -568,7 +568,7 @@
         <scene sceneID="r3Z-wW-n9h">
             <objects>
                 <tableViewController id="dJZ-UV-zbv" userLabel="Setting" customClass="SettingTableViewController" customModule="ttiling" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="insetGrouped" separatorStyle="default" allowsSelection="NO" rowHeight="55" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" id="9IY-TN-Rn4">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="insetGrouped" separatorStyle="default" rowHeight="55" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" id="9IY-TN-Rn4">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <prototypes>
@@ -647,6 +647,7 @@
                                         <constraint firstItem="kSV-Sm-8Ck" firstAttribute="leading" secondItem="QiL-qb-bGU" secondAttribute="leading" constant="16" id="iUG-Te-J97"/>
                                     </constraints>
                                 </tableViewCellContentView>
+                                <inset key="separatorInset" minX="15" minY="0.0" maxX="15" maxY="0.0"/>
                                 <connections>
                                     <outlet property="btn_right" destination="IJy-b2-veO" id="BSF-C1-n7P"/>
                                     <outlet property="lbl_desc" destination="Hf7-nf-d3w" id="RB8-b1-TgL"/>

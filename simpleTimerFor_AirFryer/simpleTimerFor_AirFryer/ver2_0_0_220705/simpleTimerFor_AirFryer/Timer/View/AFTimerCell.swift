@@ -40,12 +40,15 @@ class AFTimerCell: UICollectionViewCell {
     var editDel: fVmodel?
     
     func updateUI(food: Food?) {
-        guard let food = food else { return }
+        guard let food      = food else { return }
         foodTitleLabel.text = "\(food.foodName)"
-        ondoLabel.text = "\(food.ondo)℃" // 온도
+        ondoLabel.text      = "\(food.ondo)℃" // 온도
+        
         let h = String(food.hour), m = String(food.min)
-        timerLabel.text = "\(h)시간 \(m)분" // 시간
-        timerStartLabel.text = "\(h) : \(m)"
+        timerLabel.text         = "\(food.hour > 0 ? "\(h)시간" : "") \(food.min > 0 ? "\(m)분" : "")" // 시간
+        //timerStartLabel.text    = "\(food.hour > 0 ? "\(h) : " : "")\(m)분"
+        
+        timerStartLabel.text    = timerLabel.text
         tmpFoodStr = "\(h) : \(m)" // 타이머 실행전 기본값
         turnNumLabel.text = "\(food.turningFood)번" // 뒤집는 횟수
         
@@ -68,12 +71,12 @@ class AFTimerCell: UICollectionViewCell {
                 self?.timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] timer in
                     let elapsedTimeSeconds = Int(Date().timeIntervalSince(startTime))
                     
-                    var expireLimit = food.totalSec //hourToSec + minToSec // 초로 환산
+                    var expireLimit     = food.totalSec //hourToSec + minToSec // 초로 환산
                     if food.foodName == "test" { expireLimit = 4 } // test일 때 10초
                     var tmpStr = expireLimit - elapsedTimeSeconds // 종료시간 - 시작시간
                     
-                    let (h, m, s) = returnHMS(&tmpStr)
-                    let remainSeconds = "\(h)시 \(m)분 \(s)초"
+                    let (h, m, s)       = returnHMS(&tmpStr)
+                    let remainSeconds   = "\(h > 0 ? "\(h)시" : "") \(m > 0 ? "\(m)분" : "") \(s > 0 ? "\(s)초" : "")"
                     self?.timerStartLabel.text = String(describing: remainSeconds)
                     
                     if h <= 0 && m <= 0 && s <= 0 { self?.resetSwitch() }

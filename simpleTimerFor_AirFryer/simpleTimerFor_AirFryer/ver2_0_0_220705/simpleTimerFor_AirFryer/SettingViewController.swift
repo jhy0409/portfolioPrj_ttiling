@@ -12,10 +12,12 @@ class SettingTableViewController: UITableViewController, fVmodel {
     
     
     // MARK: =================== IBOutlet ===================
-    @IBOutlet weak var downSample: UISwitch! // 토글스위치 - 서버 데이터 다운
-    @IBOutlet weak var delFoodsAll: UISwitch! // 토글스위치 - 타이머 전체삭제
+    /// 토글스위치 - 서버 데이터 다운
+    @IBOutlet weak var downSample: UISwitch!
+    /// 토글스위치 - 타이머 전체삭제
+    @IBOutlet weak var delFoodsAll: UISwitch!
     
-    // [] 버전정보
+    /// 버전정보
     @IBOutlet weak var versionDescription: UILabel!
     
     
@@ -25,8 +27,8 @@ class SettingTableViewController: UITableViewController, fVmodel {
         [
             "header" : "login".uppercased(),
             "cells" : [
-                ["title" : "Google", "type": stType.btn, "action": {}] as [String : Any],
-                ["title" : "Apple", "type": stType.btn, "action": {}],
+                ["title" : "Google", "type": stType.btn, "action": { print("--> Google tapped\n")} ] as [String : Any],
+                ["title" : "Apple", "type": stType.btn, "action": { print("--> Apple tapped\n")} ],
             ]
         ],
         
@@ -89,8 +91,8 @@ class SettingTableViewController: UITableViewController, fVmodel {
         }
     }
     
-    
-    @objc func delAllFoodArr(_ sender: idxSwitch) { // 스위치 함수 - 서버데이터 전체삭제
+    /// 스위치 함수 - 서버데이터 전체삭제
+    @objc func delAllFoodArr(_ sender: idxSwitch) {
         if sender.isOn {
             // [ㅇ] foods Arr 갯수가 0이면 return
             if foodShared.foods.count == 0 {
@@ -188,6 +190,7 @@ class SettingTableViewController: UITableViewController, fVmodel {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "settingTVC", for: indexPath) as! settingTVC
         cell.tag = indexPath.row
+        cell.selectionStyle = .none
         
         if let obj = tblArr[indexPath.section]["cells"] as? [[String: Any]] {
             let ithObj          = obj[indexPath.row]
@@ -220,6 +223,17 @@ class SettingTableViewController: UITableViewController, fVmodel {
         return cell
     }
     
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        print("--> tap index = \(indexPath)")
+        
+        if let obj = tblArr[indexPath.section]["cells"] as? [[String: Any]] {
+            let ithObj              = obj[indexPath.row]
+            let act: (()->Void)     = ithObj["action"] as? ()->Void ?? { print("--> action is Nil\n") }
+            
+            act()
+        }
+        
+    }
     
 }
 
