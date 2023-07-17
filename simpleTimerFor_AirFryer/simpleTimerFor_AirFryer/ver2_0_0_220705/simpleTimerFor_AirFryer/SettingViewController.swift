@@ -298,10 +298,15 @@ extension UIViewController {
 
 protocol fVmodel {
     var foodShared: FoodViewModel { get }
+    func afterLeaveView()
 }
 
 extension fVmodel {
     var foodShared: FoodViewModel {
         get { return FoodViewModel.shared }
+    }
+    
+    func afterLeaveView() {
+        
     }
 }

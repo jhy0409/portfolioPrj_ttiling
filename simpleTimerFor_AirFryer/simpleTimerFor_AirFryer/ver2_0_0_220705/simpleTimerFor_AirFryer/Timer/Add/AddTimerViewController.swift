@@ -112,6 +112,8 @@ class AddTimerViewController: UIViewController, UITextFieldDelegate, fVmodel {
         return res
     }
     
+    var editFoodObj: Food?
+    var editDel: fVmodel?
     
     // MARK: ------------------- View Life Cycle -------------------
     
@@ -124,8 +126,23 @@ class AddTimerViewController: UIViewController, UITextFieldDelegate, fVmodel {
         
         let tapG: UITapGestureRecognizer = .init(target: self, action: #selector(endEdit))
         containerView.addGestureRecognizer(tapG)
+        
+        if let fObj = editFoodObj {
+            settingAlltxtField(obj: fObj)
+        }
     }
     
+    
+    // [ㅇ] tmpFood에서 현재타이머의 속성 전체 가져와서 세팅
+    func settingAlltxtField(obj: Food) {
+        foodNameTxt.text    = obj.foodName
+        ondoTxt.text        = String(describing: obj.ondo)
+        hourTxt.text        = String(describing: obj.hour)
+        minTxt.text         = String(describing: obj.min)
+        turnTimeTxt.text    = String(describing: obj.turningFood)
+        
+        addButton.setTitle("수정", for: .normal)
+    }
     
     // MARK: ------------------- IBAction functions -------------------
     
@@ -140,13 +157,46 @@ class AddTimerViewController: UIViewController, UITextFieldDelegate, fVmodel {
             //    hour = String(h); min = String(m)
             //}
             
-            let foodType: String = btnSenderTxt == "NONE" ? "기타" : btnSenderTxt
-            let created: String = currentTime()
+            let foodType: String    = btnSenderTxt == "NONE" ? "기타" : btnSenderTxt
+            let created: String     = currentTime()
+            if let edObj = editFoodObj {
+                
+                for i in foodShared.foods {
+                    if i.foodId == edObj.foodId { // 기존 수정
+                        print("\n\nupdate food Func ----> curr id \(i.foodId)")
+                        let food: Food = .init(foodId: edObj.foodId, ondo: Int(ondo)!, hour: Int(hour)!, min: Int(min)!, turn: Int(turn)!, foodType: foodType, isTimerOn: false, foodName: foodName, created: created)
+
+                        foodShared.updateFood(food) { [weak self] in
+                            guard let `self` = self else { return }
+                            
+                            self.txtField_makeEmpty(txtFields: self.uiTxtFields) // 문자입력 창 초기화
+                            
+                            self.showAlert("타이머 수정 완료", actions: [
+                                ["닫기" : { [weak self] UIAlertAction in
+                                    guard let `self` else { return }
+
+                                    self.dismiss(animated: true) {
+                                        self.editDel?.afterLeaveView()
+                                    }
+                                }]
+                            ])
+                            
+                        }
+                        break
+                    }
+                }
+                
+            } else { // 신규추가
+                
+                let food: Food = FoodManager.shared.createFood(ondo: Int(ondo)!, hour: Int(hour)!, min: Int(min)!, turn: Int(turn)!, foodType: foodType, isTimerOn: false, foodName: foodName, created: created)
+                
+                foodShared.addFood(food, isLast: true) { [weak self] in // 음식 배열에 추가
+                    guard let `self` = self else { return }
+                    txtField_makeEmpty(txtFields: uiTxtFields) // 문자입력 창 초기화
+                    showAlert("타이머 추가 완료")
+                }
+            }
             
-            let food: Food = FoodManager.shared.createFood(ondo: Int(ondo)!, hour: Int(hour)!, min: Int(min)!, turn: Int(turn)!, foodType: foodType, isTimerOn: false, foodName: foodName, created: created)
-            foodShared.addFood(food) // 음식 배열에 추가
-            txtField_makeEmpty(txtFields: uiTxtFields) // 문자입력 창 초기화
-            showAlert("타이머 추가 완료")
         } else {
             showAlert()
         }
@@ -194,6 +244,22 @@ extension AddTimerViewController {
         
         let defaultAction = UIAlertAction(title: "닫기", style: .default, handler: nil)
         alertController.addAction(defaultAction)
+        present(alertController, animated: true, completion: nil)
+    }
+    
+    func showAlert(_ strMsg: String, actions: [[ String: (UIAlertAction)->Void ]]? = nil ) {
+        let alertController = UIAlertController(title: "확인", message: strMsg, preferredStyle: .alert)
+        
+        if let acts = actions {
+            for i in acts {
+                alertController.addAction(.init(title: i.keys.first ?? "", style: .default, handler: i.values.first ))
+            }
+            
+        } else {
+            let defaultAction = UIAlertAction(title: "닫기", style: .default, handler: nil)
+            alertController.addAction(defaultAction)
+        }
+        
         present(alertController, animated: true, completion: nil)
     }
 }

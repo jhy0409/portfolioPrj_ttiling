@@ -37,6 +37,8 @@ class AFTimerCell: UICollectionViewCell {
     var tmpFoodStr: String? // 타이머 실행전 기본값
     var tmpFoodFromCell: Food? // foods[indexpath.item] 낱개값, 수정버튼 클릭 시 뷰 띄울 때 필요
     
+    var editDel: fVmodel?
+    
     func updateUI(food: Food?) {
         guard let food = food else { return }
         foodTitleLabel.text = "\(food.foodName)"
@@ -125,8 +127,9 @@ extension AFTimerCell {
     
     @IBAction func editBtnTapped(_ sender: Any) { // [ㅇ] 수정버튼 누를 때 동작 -> 뷰를 새로 띄움
         print("\n수정버튼 눌림")
-        guard let editVC = viewController?.storyboard?.instantiateViewController(identifier: "EditTimerViewController") as? EditTimerViewController else { return }
-        editVC.tmpFood = tmpFoodFromCell
+        guard let editVC = viewController?.storyboard?.instantiateViewController(identifier: "AddTimerViewController") as? AddTimerViewController else { return }
+        editVC.editFoodObj = tmpFoodFromCell
+        editVC.editDel = editDel
         viewController?.present(editVC, animated: true, completion: nil)
     }
     

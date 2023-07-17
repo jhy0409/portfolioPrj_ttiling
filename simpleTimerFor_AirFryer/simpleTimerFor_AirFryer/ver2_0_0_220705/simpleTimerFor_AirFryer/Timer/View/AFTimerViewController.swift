@@ -8,19 +8,31 @@
 import UIKit
 import UserNotifications
 
-class AFTimerViewController: UIViewController {
+class AFTimerViewController: UIViewController, fVmodel {
+    // MARK: ------------------- IBOutlets -------------------
     @IBOutlet weak var collectionView: UICollectionView!
-    let foodViewModel = FoodViewModel.shared
+    
+    
+    // MARK: ------------------- Variables -------------------
     var startTime: Date?
     static let userNotiCenter = UNUserNotificationCenter.current()
     
+    
+    // MARK: ------------------- View Life Cycle -------------------
     override func viewDidLoad() {
         super.viewDidLoad()
-        NotificationCenter.default.addObserver(self, selector: #selector(self.didDismiss_EditTimerViewController(_:)), name: didDismiss_EditTimerViewController, object: nil)
-        foodViewModel.loadFoods()
-        collectionView.reloadData()
+        
         requestAuthNoti() // 사용자에게 알림 권한 요청
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
+        
+        foodShared.loadFoods { [weak self] in
+            self?.collectionView.reloadData()
+        }
+    }
+    
     
     func requestAuthNoti() { // 사용자에게 알림 권한 요청
         let notiAuthOptions = UNAuthorizationOptions(arrayLiteral: [.alert, .badge, .sound])
@@ -48,44 +60,28 @@ class AFTimerViewController: UIViewController {
         }
         print("\n\n-----> [AFViewCon] Line 38 : requestSendNoti(seconds: Double) Called")
     }
-    
-    // [ㅇ] 타이머 수정 모달창이 닫힌 후 컬렉션뷰 업데이트
-    let didDismiss_EditTimerViewController: Notification.Name = Notification.Name("EditTimerViewController")
-    
-    @objc func didDismiss_EditTimerViewController(_ noti: Notification) {
-        OperationQueue.main.addOperation {
-            self.collectionView.reloadData()
-        }
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(true)
-        self.collectionView.reloadData()
-        let editController = EditTimerViewController()
-        editController.isDismissed = { [weak self] in
-            self?.collectionView.reloadData()
-        }
-    }
+  
 }
 
 extension AFTimerViewController: UICollectionViewDataSource {
     // [ㅇ] item 개수
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return foodViewModel.foods.count
+        return foodShared.foods.count
     }
     
     // [ㅇ] cell 표시
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "AFTimerCell", for: indexPath) as? AFTimerCell else { return UICollectionViewCell() }
-        let food: Food = foodViewModel.foods[indexPath.item]
+        let food: Food = foodShared.foods[indexPath.item]
         cell.tmpFoodFromCell = food
         cell.updateUI(food: food)
         cell.viewController = self
+        cell.editDel = self
         
         // [ㅇ] 삭제 버튼 누를 때 동작
         cell.closeBtnHandler = {
-            self.foodViewModel.deleteFood(food)
+            self.foodShared.deleteFood(food)
             self.collectionView.reloadData()
         }
         
@@ -107,7 +103,7 @@ extension AFTimerViewController: UICollectionViewDataSource {
 extension AFTimerViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let itemSpacing: CGFloat = 15
-        let margin: CGFloat = 18 
+        let margin: CGFloat = 18
         let width = (collectionView.bounds.width - itemSpacing - (margin * 2)) / 2
         //let height = width + 150
         let height: CGFloat = 340
@@ -142,5 +138,10 @@ extension AFTimerViewController: UNUserNotificationCenterDelegate {
                                 willPresent notification: UNNotification,
                                 withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
         completionHandler([.alert, .badge, .sound])
+    }
+    
+    func afterLeaveView() {
+        print("--> afterLeaveView / afTimerVC")
+            collectionView.reloadData()
     }
 }

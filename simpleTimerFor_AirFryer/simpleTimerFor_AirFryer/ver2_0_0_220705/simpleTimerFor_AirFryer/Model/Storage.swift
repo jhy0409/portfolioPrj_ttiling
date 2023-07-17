@@ -54,7 +54,7 @@ public class Storage {
     
     // FOOD: 파일은 Data 타입형태로 읽을수 있음
     // FOOD: Data 타입은 Codable decode 가능
-    static func retrive<T: Decodable>(_ fileName: String, from directory: Directory, as type: T.Type) -> T? {
+    static func retrive<T: Decodable>(_ fileName: String, from directory: Directory, as type: T.Type, completion: (()->Void)? = nil ) -> T? {
         let url = directory.url.appendingPathComponent(fileName, isDirectory: false)
         guard FileManager.default.fileExists(atPath: url.path) else { return nil }
         guard let data = FileManager.default.contents(atPath: url.path) else { return nil }
@@ -63,9 +63,13 @@ public class Storage {
         
         do {
             let model = try decoder.decode(type, from: data)
+            completion?()
+            
             return model
         } catch let error {
             print("---> Failed to decode msg: \(error.localizedDescription)")
+            completion?()
+            
             return nil
         }
     }

@@ -94,8 +94,8 @@ class FoodManager {
         Storage.store(foods, to: .documents, as: "foods.json", completion)
     }
     
-    func retrieveFood() {
-        foods = Storage.retrive("foods.json", from: .documents, as: [Food].self) ?? []
+    func retrieveFood(completion: (()->Void)? = nil) {
+        foods = Storage.retrive("foods.json", from: .documents, as: [Food].self, completion: completion) ?? []
         
         let lastId = foods.last?.foodId ?? 0
         FoodManager.lastId = lastId
@@ -140,8 +140,8 @@ class FoodViewModel {
         manager.updateFood(food, completion: completion)
     }
     
-    func loadFoods() {
-        manager.retrieveFood()
+    func loadFoods(completion: (()->Void)? = nil) {
+        manager.retrieveFood(completion: completion)
     }
     
     func deleteAllFoods() {

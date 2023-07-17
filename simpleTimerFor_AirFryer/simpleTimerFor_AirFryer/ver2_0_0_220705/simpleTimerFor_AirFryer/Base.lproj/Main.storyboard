@@ -258,7 +258,7 @@
         <!--AddTimer-->
         <scene sceneID="bgg-uM-mPd">
             <objects>
-                <viewController id="ZvY-fh-ll5" userLabel="AddTimer" customClass="AddTimerViewController" customModule="ttiling" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="AddTimerViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="ZvY-fh-ll5" userLabel="AddTimer" customClass="AddTimerViewController" customModule="ttiling" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="NMm-vY-Gv9">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
