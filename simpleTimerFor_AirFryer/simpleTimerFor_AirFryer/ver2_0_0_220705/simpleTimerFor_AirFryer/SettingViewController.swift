@@ -77,6 +77,34 @@ class SettingTableViewController: UITableViewController, fVmodel {
         super.viewDidLoad()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        if let user = GIDSignIn.sharedInstance.currentUser?.profile {
+            let emptyStr: String = "-"
+            let userNm: String    = user.name.isEmpty ? emptyStr : user.name
+            let email: String     = user.email.isEmpty ? emptyStr : user.email
+            //let phonNm: String    = (user.phoneNumber?.isEmpty ?? true) ? emptyStr : user. ?? emptyStr
+            
+            self.tblArr[0].updateValue([
+                ["title" : "Google", "type": stType.btn,
+                 "action": { [weak self] in guard let `self` = self else { return }
+                    print("--> Google tapped\n")
+                    self.performGoogleSignInFlow()
+                    
+                } ] as [String : Any]
+            ], forKey: "cells")
+            
+            self.tblArr[1].updateValue( [
+                ["title" : "user name", "type": stType.lbl, "rightDesc": "\(userNm)", "action": {}] as [String : Any],
+                ["title" : "email", "type": stType.lbl, "rightDesc": "\(email)", "action": {}],
+                ["title" : "phone number", "type": stType.lbl, "rightDesc": "-", "action": {}]
+            ], forKey: "cells")
+            
+            self.tableView.reloadData()
+        }
+    }
+    
     // [ㅇ] firebase에서 내려받기
     @objc func downToggle(_ sender: idxSwitch) {
         // [ㅇ] toggle버튼 ON -> 기본 json file 다운로드
@@ -225,34 +253,35 @@ class SettingTableViewController: UITableViewController, fVmodel {
     }
     
     func signIn(with credential: AuthCredential) {
-      // [START signin_google_credential]
+        // [START signin_google_credential]
         Auth.auth().signIn(with: credential) { [weak self] result, error in
-        // [START_EXCLUDE silent]
+            // [START_EXCLUDE silent]
             
             guard error == nil, let `self` = self else { return (self!.displayError(error)) }
-        // [END_EXCLUDE]
-
-        // At this point, our user is signed in
-        // [START_EXCLUDE silent]
-        // so we advance to the User View Controller
-        //self.transitionToUserViewController()
-          if let userInfo = result?.user {
-              let emptyStr: String = "-"
-              let userNm: String    = ((userInfo.displayName?.isEmpty ?? true) ? emptyStr : userInfo.displayName) ?? emptyStr
-              let email: String     = (userInfo.email?.isEmpty ?? true) ? emptyStr : userInfo.email ?? emptyStr
-              let phonNm: String    = (userInfo.phoneNumber?.isEmpty ?? true) ? emptyStr : userInfo.phoneNumber ?? emptyStr
-              
-              self.tblArr[1]["cells"] = [
-                ["title" : "user name", "type": stType.lbl, "rightDesc": "\(userNm)", "action": {}] as [String : Any],
-                ["title" : "email", "type": stType.lbl, "rightDesc": "\(email)", "action": {}],
-                ["title" : "phone number", "type": stType.lbl, "rightDesc": "\(phonNm)", "action": {}]
-              ]
-              
-              self.tableView.reloadData()
-          }
-        // [END_EXCLUDE]
-      }
-      // [END signin_google_credential]
+            // [END_EXCLUDE]
+            
+            // At this point, our user is signed in
+            // [START_EXCLUDE silent]
+            // so we advance to the User View Controller
+            //self.transitionToUserViewController()
+            if let userInfo = result?.user {
+                let emptyStr: String = "-"
+                let userNm: String    = ((userInfo.displayName?.isEmpty ?? true) ? emptyStr : userInfo.displayName) ?? emptyStr
+                let email: String     = (userInfo.email?.isEmpty ?? true) ? emptyStr : userInfo.email ?? emptyStr
+                let phonNm: String    = (userInfo.phoneNumber?.isEmpty ?? true) ? emptyStr : userInfo.phoneNumber ?? emptyStr
+                
+                
+                self.tblArr[1].updateValue([
+                    ["title" : "user name", "type": stType.lbl, "rightDesc": "\(userNm)", "action": {}] as [String : Any],
+                    ["title" : "email", "type": stType.lbl, "rightDesc": "\(email)", "action": {}],
+                    ["title" : "phone number", "type": stType.lbl, "rightDesc": "\(phonNm)", "action": {}]
+                ], forKey: "cells")
+                
+                self.tableView.reloadData()
+            }
+            // [END_EXCLUDE]
+        }
+        // [END signin_google_credential]
     }
     
     
@@ -349,7 +378,10 @@ class settingTVC: UITableViewCell {
             switch viewObj {
             case swch:
                 swch.idx = (viewObj.tag, tag)
-            
+                
+            case btn_right:
+                btn_right.setImage(.init(systemName: hasCrntUser ? "checkmark" : "chevron.right"), for: .normal)
+                
             default:
                 break
             }
@@ -411,6 +443,11 @@ extension UIViewController {
     }
 }
 
+extension NSObject {
+    var hasCrntUser: Bool {
+        return GIDSignIn.sharedInstance.currentUser != nil
+    }
+}
 
 protocol fVmodel {
     var foodShared: FoodViewModel { get }

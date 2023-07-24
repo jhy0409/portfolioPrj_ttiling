@@ -583,37 +583,37 @@
                                             <rect key="frame" x="16" y="0.0" width="342" height="55"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="249" verticalHuggingPriority="251" horizontalCompressionResistancePriority="748" text="서버에서 샘플받기" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ctw-hh-k3B">
-                                                    <rect key="frame" x="0.0" y="17" width="272" height="21.5"/>
+                                                    <rect key="frame" x="0.0" y="17" width="252" height="21.5"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fE7-NY-qTd" userLabel="sp10">
-                                                    <rect key="frame" x="272" y="0.0" width="10" height="55"/>
+                                                    <rect key="frame" x="252" y="0.0" width="10" height="55"/>
                                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="10" id="faV-et-XfV"/>
                                                     </constraints>
                                                 </view>
                                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9D1-2J-Rls">
-                                                    <rect key="frame" x="282" y="0.0" width="60" height="55"/>
+                                                    <rect key="frame" x="262" y="0.0" width="80" height="55"/>
                                                     <subviews>
                                                         <switch hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="XkH-JJ-FFP" customClass="idxSwitch" customModule="ttiling" customModuleProvider="target">
-                                                            <rect key="frame" x="11" y="12" width="51" height="31"/>
+                                                            <rect key="frame" x="31" y="12" width="51" height="31"/>
                                                             <color key="onTintColor" systemColor="systemBlueColor"/>
                                                         </switch>
                                                         <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="v1.0" textAlignment="right" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Hf7-nf-d3w">
-                                                            <rect key="frame" x="0.0" y="0.0" width="60" height="55"/>
+                                                            <rect key="frame" x="0.0" y="0.0" width="80" height="55"/>
                                                             <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                                             <color key="textColor" systemColor="secondaryLabelColor"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
-                                                        <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IJy-b2-veO">
-                                                            <rect key="frame" x="41" y="0.0" width="19" height="55"/>
+                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="trailing" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IJy-b2-veO">
+                                                            <rect key="frame" x="0.0" y="0.0" width="80" height="55"/>
                                                             <color key="tintColor" systemColor="systemGrayColor"/>
                                                             <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                                             <state key="normal">
-                                                                <imageReference key="image" image="chevron.right" catalog="system" symbolScale="large"/>
+                                                                <imageReference key="image" image="checkmark" catalog="system" symbolScale="large"/>
                                                                 <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="pointSize" pointSize="20"/>
                                                             </state>
                                                         </button>
@@ -623,10 +623,11 @@
                                                         <constraint firstItem="Hf7-nf-d3w" firstAttribute="centerY" secondItem="9D1-2J-Rls" secondAttribute="centerY" id="4pM-TC-qoF"/>
                                                         <constraint firstAttribute="trailing" secondItem="Hf7-nf-d3w" secondAttribute="trailing" id="7De-5K-aUt"/>
                                                         <constraint firstAttribute="trailing" secondItem="IJy-b2-veO" secondAttribute="trailing" id="7am-qz-sD7"/>
+                                                        <constraint firstItem="IJy-b2-veO" firstAttribute="leading" secondItem="9D1-2J-Rls" secondAttribute="leading" id="AO7-AB-1JR"/>
                                                         <constraint firstItem="XkH-JJ-FFP" firstAttribute="centerY" secondItem="9D1-2J-Rls" secondAttribute="centerY" id="LDa-r4-KZw"/>
                                                         <constraint firstItem="IJy-b2-veO" firstAttribute="centerY" secondItem="9D1-2J-Rls" secondAttribute="centerY" id="LSS-iJ-q40"/>
                                                         <constraint firstItem="IJy-b2-veO" firstAttribute="height" secondItem="9D1-2J-Rls" secondAttribute="height" id="VOh-Rf-jnA"/>
-                                                        <constraint firstAttribute="width" constant="60" id="W9O-Qp-bYp"/>
+                                                        <constraint firstAttribute="width" constant="80" id="W9O-Qp-bYp"/>
                                                         <constraint firstAttribute="trailing" secondItem="XkH-JJ-FFP" secondAttribute="trailing" id="eE6-2x-cVn"/>
                                                         <constraint firstItem="Hf7-nf-d3w" firstAttribute="height" secondItem="9D1-2J-Rls" secondAttribute="height" id="i6S-Zz-trb"/>
                                                         <constraint firstItem="Hf7-nf-d3w" firstAttribute="leading" secondItem="9D1-2J-Rls" secondAttribute="leading" id="smD-Xd-uLl"/>
@@ -963,7 +964,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="chevron.right" catalog="system" width="97" height="128"/>
+        <image name="checkmark" catalog="system" width="128" height="114"/>
         <image name="gear" catalog="system" width="128" height="122"/>
         <image name="plus" catalog="system" width="128" height="113"/>
         <image name="timer" catalog="system" width="128" height="123"/>
