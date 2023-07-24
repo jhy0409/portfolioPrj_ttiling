@@ -208,47 +208,55 @@ class SettingTableViewController: UITableViewController, fVmodel {
     
     // MARK: ------------------- google sign in -------------------
     private func performGoogleSignInFlow() {
-      // [START headless_google_auth]
-      guard let clientID = FirebaseApp.app()?.options.clientID else { return }
-
-      // Create Google Sign In configuration object.
-      // [START_EXCLUDE silent]
-      // TODO: Move configuration to Info.plist
-      // [END_EXCLUDE]
-      let config = GIDConfiguration(clientID: clientID)
-      GIDSignIn.sharedInstance.configuration = config
-
-      // Start the sign in flow!
-      GIDSignIn.sharedInstance.signIn(withPresenting: self) { [unowned self] result, error in
-        guard error == nil else {
-          // [START_EXCLUDE]
-          return displayError(error)
-          // [END_EXCLUDE]
+        guard let cell = tableView.cellForRow(at: .init(row: 0, section: 0)) as? settingTVC,
+        let title: String = cell.btn_right.titleLabel?.text else { return }
+        
+        
+        if title == "로그아웃" {
+            print("title is 로그아웃")
+        } else {
+            // [START headless_google_auth]
+            guard let clientID = FirebaseApp.app()?.options.clientID else { return }
+            
+            // Create Google Sign In configuration object.
+            // [START_EXCLUDE silent]
+            // TODO: Move configuration to Info.plist
+            // [END_EXCLUDE]
+            let config = GIDConfiguration(clientID: clientID)
+            GIDSignIn.sharedInstance.configuration = config
+            
+            // Start the sign in flow!
+            GIDSignIn.sharedInstance.signIn(withPresenting: self) { [unowned self] result, error in
+                guard error == nil else {
+                    // [START_EXCLUDE]
+                    return displayError(error)
+                    // [END_EXCLUDE]
+                }
+                
+                guard let user = result?.user,
+                      let idToken = user.idToken?.tokenString
+                else {
+                    // [START_EXCLUDE]
+                    let error = NSError(
+                        domain: "GIDSignInError",
+                        code: -1,
+                        userInfo: [
+                            NSLocalizedDescriptionKey: "Unexpected sign in result: required authentication data is missing.",
+                        ]
+                    )
+                    return displayError(error)
+                    // [END_EXCLUDE]
+                }
+                
+                let credential = GoogleAuthProvider.credential(withIDToken: idToken,
+                                                               accessToken: user.accessToken.tokenString)
+                
+                // [START_EXCLUDE]
+                signIn(with: credential)
+                // [END_EXCLUDE]
+            }
+            // [END headless_google_auth]
         }
-
-        guard let user = result?.user,
-          let idToken = user.idToken?.tokenString
-        else {
-          // [START_EXCLUDE]
-          let error = NSError(
-            domain: "GIDSignInError",
-            code: -1,
-            userInfo: [
-              NSLocalizedDescriptionKey: "Unexpected sign in result: required authentication data is missing.",
-            ]
-          )
-          return displayError(error)
-          // [END_EXCLUDE]
-        }
-
-        let credential = GoogleAuthProvider.credential(withIDToken: idToken,
-                                                       accessToken: user.accessToken.tokenString)
-
-        // [START_EXCLUDE]
-        signIn(with: credential)
-        // [END_EXCLUDE]
-      }
-      // [END headless_google_auth]
     }
     
     func signIn(with credential: AuthCredential) {
@@ -445,7 +453,7 @@ extension UIViewController {
 
 extension NSObject {
     var hasCrntUser: Bool {
-        return GIDSignIn.sharedInstance.currentUser != nil
+        return Auth.auth().currentUser != nil
     }
 }
 
