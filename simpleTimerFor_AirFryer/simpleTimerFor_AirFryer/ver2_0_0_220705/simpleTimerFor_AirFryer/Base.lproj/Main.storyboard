@@ -613,6 +613,7 @@
                                                             <color key="tintColor" systemColor="systemGrayColor"/>
                                                             <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                                             <state key="normal">
+                                                                <color key="titleColor" systemColor="secondaryLabelColor"/>
                                                                 <imageReference key="image" image="checkmark" catalog="system" symbolScale="large"/>
                                                                 <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="pointSize" pointSize="20"/>
                                                             </state>

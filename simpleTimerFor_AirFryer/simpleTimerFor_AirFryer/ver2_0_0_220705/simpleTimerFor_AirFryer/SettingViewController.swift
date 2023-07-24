@@ -28,7 +28,9 @@ class SettingTableViewController: UITableViewController, fVmodel {
     /// 버전정보
     @IBOutlet weak var versionDescription: UILabel!
     
-    
+    var user: User? {
+        return Auth.auth().currentUser
+    }
     // MARK: =================== Variables ===================
     
     lazy var tblArr: [[String: Any]] = [
@@ -75,16 +77,13 @@ class SettingTableViewController: UITableViewController, fVmodel {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
         
-        if let user = GIDSignIn.sharedInstance.currentUser?.profile {
+        
+        if let usr = user {
             let emptyStr: String = "-"
-            let userNm: String    = user.name.isEmpty ? emptyStr : user.name
-            let email: String     = user.email.isEmpty ? emptyStr : user.email
-            //let phonNm: String    = (user.phoneNumber?.isEmpty ?? true) ? emptyStr : user. ?? emptyStr
+            let userNm: String    = (usr.displayName?.isEmpty ?? true) ? emptyStr : (usr.displayName ?? emptyStr)
+            let email: String     = (usr.email?.isEmpty ?? true) ? emptyStr : (usr.email ?? emptyStr)
+            let phonNm: String    = (usr.phoneNumber?.isEmpty ?? true) ? emptyStr : (usr.phoneNumber ?? emptyStr)
             
             self.tblArr[0].updateValue([
                 ["title" : "Google", "type": stType.btn,
@@ -98,7 +97,7 @@ class SettingTableViewController: UITableViewController, fVmodel {
             self.tblArr[1].updateValue( [
                 ["title" : "user name", "type": stType.lbl, "rightDesc": "\(userNm)", "action": {}] as [String : Any],
                 ["title" : "email", "type": stType.lbl, "rightDesc": "\(email)", "action": {}],
-                ["title" : "phone number", "type": stType.lbl, "rightDesc": "-", "action": {}]
+                ["title" : "phone number", "type": stType.lbl, "rightDesc": "\(phonNm)", "action": {}]
             ], forKey: "cells")
             
             self.tableView.reloadData()
@@ -380,7 +379,8 @@ class settingTVC: UITableViewCell {
                 swch.idx = (viewObj.tag, tag)
                 
             case btn_right:
-                btn_right.setImage(.init(systemName: hasCrntUser ? "checkmark" : "chevron.right"), for: .normal)
+                btn_right.setImage(.init(systemName: hasCrntUser ? "" : "chevron.right"), for: .normal)
+                btn_right.setTitle(hasCrntUser ? "로그아웃" : "", for: .normal)
                 
             default:
                 break
