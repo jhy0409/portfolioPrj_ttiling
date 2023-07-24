@@ -94,7 +94,7 @@ extension AFTimerViewController: UICollectionViewDataSource {
             }
             cell.setTimer(startTime: startTime, food: food) // 라벨을 바꿈
         }
-        self.foodViewModel.updateFood(food)
+        self.foodShared.updateFood(food)
         return cell
     }
 }

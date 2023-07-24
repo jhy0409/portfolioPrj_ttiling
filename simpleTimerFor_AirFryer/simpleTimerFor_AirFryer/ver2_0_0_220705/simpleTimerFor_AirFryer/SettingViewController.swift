@@ -8,6 +8,14 @@
 import UIKit
 import Firebase
 
+import FirebaseCore
+import FirebaseAuth
+// [END auth_import]
+
+// For Sign in with Google
+// [START google_import]
+import GoogleSignIn
+
 class SettingTableViewController: UITableViewController, fVmodel {
     
     
@@ -25,15 +33,19 @@ class SettingTableViewController: UITableViewController, fVmodel {
     
     lazy var tblArr: [[String: Any]] = [
         [
-            "header" : "login".uppercased(),
+            "header" : "로그인".uppercased(),
             "cells" : [
-                ["title" : "Google", "type": stType.btn, "action": { print("--> Google tapped\n")} ] as [String : Any],
-                ["title" : "Apple", "type": stType.btn, "action": { print("--> Apple tapped\n")} ],
+                ["title" : "Google", "type": stType.btn, "action": { [weak self] in
+                    guard let `self` = self else { return }
+                    print("--> Google tapped\n")
+                    self.performGoogleSignInFlow()
+                    
+                } ] as [String : Any]
             ]
         ],
         
         [
-            "header" : "user info".uppercased(),
+            "header" : "유저정보",
             "cells" : [
                 ["title" : "user name", "type": stType.lbl, "rightDesc": "-", "action": {}] as [String : Any],
                 ["title" : "email", "type": stType.lbl, "rightDesc": "-", "action": {}],
@@ -43,7 +55,7 @@ class SettingTableViewController: UITableViewController, fVmodel {
         ],
         
         [
-            "header" : "settings".uppercased(),
+            "header" : "설정",
             "cells" : [
                 ["title" : "서버에서 샘플받기", "type": stType.swch, "isOn": false, "action": {}] as [String : Any],
                 ["title" : "타이머 전체 삭제", "type": stType.swch, "isOn": false, "action": {}],
@@ -167,6 +179,83 @@ class SettingTableViewController: UITableViewController, fVmodel {
     }
     
     
+    // MARK: ------------------- google sign in -------------------
+    private func performGoogleSignInFlow() {
+      // [START headless_google_auth]
+      guard let clientID = FirebaseApp.app()?.options.clientID else { return }
+
+      // Create Google Sign In configuration object.
+      // [START_EXCLUDE silent]
+      // TODO: Move configuration to Info.plist
+      // [END_EXCLUDE]
+      let config = GIDConfiguration(clientID: clientID)
+      GIDSignIn.sharedInstance.configuration = config
+
+      // Start the sign in flow!
+      GIDSignIn.sharedInstance.signIn(withPresenting: self) { [unowned self] result, error in
+        guard error == nil else {
+          // [START_EXCLUDE]
+          return displayError(error)
+          // [END_EXCLUDE]
+        }
+
+        guard let user = result?.user,
+          let idToken = user.idToken?.tokenString
+        else {
+          // [START_EXCLUDE]
+          let error = NSError(
+            domain: "GIDSignInError",
+            code: -1,
+            userInfo: [
+              NSLocalizedDescriptionKey: "Unexpected sign in result: required authentication data is missing.",
+            ]
+          )
+          return displayError(error)
+          // [END_EXCLUDE]
+        }
+
+        let credential = GoogleAuthProvider.credential(withIDToken: idToken,
+                                                       accessToken: user.accessToken.tokenString)
+
+        // [START_EXCLUDE]
+        signIn(with: credential)
+        // [END_EXCLUDE]
+      }
+      // [END headless_google_auth]
+    }
+    
+    func signIn(with credential: AuthCredential) {
+      // [START signin_google_credential]
+        Auth.auth().signIn(with: credential) { [weak self] result, error in
+        // [START_EXCLUDE silent]
+            
+            guard error == nil, let `self` = self else { return (self!.displayError(error)) }
+        // [END_EXCLUDE]
+
+        // At this point, our user is signed in
+        // [START_EXCLUDE silent]
+        // so we advance to the User View Controller
+        //self.transitionToUserViewController()
+          if let userInfo = result?.user {
+              let emptyStr: String = "-"
+              let userNm: String    = ((userInfo.displayName?.isEmpty ?? true) ? emptyStr : userInfo.displayName) ?? emptyStr
+              let email: String     = (userInfo.email?.isEmpty ?? true) ? emptyStr : userInfo.email ?? emptyStr
+              let phonNm: String    = (userInfo.phoneNumber?.isEmpty ?? true) ? emptyStr : userInfo.phoneNumber ?? emptyStr
+              
+              self.tblArr[1]["cells"] = [
+                ["title" : "user name", "type": stType.lbl, "rightDesc": "\(userNm)", "action": {}] as [String : Any],
+                ["title" : "email", "type": stType.lbl, "rightDesc": "\(email)", "action": {}],
+                ["title" : "phone number", "type": stType.lbl, "rightDesc": "\(phonNm)", "action": {}]
+              ]
+              
+              self.tableView.reloadData()
+          }
+        // [END_EXCLUDE]
+      }
+      // [END signin_google_credential]
+    }
+    
+    
     // MARK: =================== tableView ===================
     
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
@@ -270,7 +359,7 @@ class settingTVC: UITableViewCell {
             switch visView {
             case lbl_desc:
                 let lblWidth: CGFloat = (obj.rightDesc as NSString).size(withAttributes: [NSAttributedString.Key.font : lbl_desc.font as Any]).width
-                viewRhtAccWidth.constant = lblWidth > 100 ? 100 : lblWidth
+                viewRhtAccWidth.constant = lblWidth > (frame.width - lblWidth) ? 100 : lblWidth
                 
             default:
                 viewRhtAccWidth.constant = visView.frame.width
@@ -306,6 +395,19 @@ extension UIViewController {
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
         
         return dateFormatter.string(from: now)
+    }
+    
+    public func displayError(_ error: Error?, from function: StaticString = #function) {
+      guard let error = error else { return }
+      print("ⓧ Error in \(function): \(error.localizedDescription)")
+      let message = "\(error.localizedDescription)\n\n Ocurred in \(function)"
+      let errorAlertController = UIAlertController(
+        title: "Error",
+        message: message,
+        preferredStyle: .alert
+      )
+      errorAlertController.addAction(UIAlertAction(title: "OK", style: .default))
+      present(errorAlertController, animated: true, completion: nil)
     }
 }
 

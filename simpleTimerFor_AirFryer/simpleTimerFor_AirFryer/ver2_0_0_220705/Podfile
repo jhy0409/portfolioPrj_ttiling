@@ -9,6 +9,8 @@ target 'simpleTimerFor_AirFryer' do
   pod 'Firebase/Analytics'
   pod 'Firebase/Database'
   pod 'Firebase/Core'
+  pod 'FirebaseAuth'
+  pod 'GoogleSignIn'
 
 end
 
