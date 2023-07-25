@@ -171,7 +171,7 @@ class AddTimerViewController: UIViewController, UITextFieldDelegate, fVmodel {
                             
                             self.txtField_makeEmpty(txtFields: self.uiTxtFields) // 문자입력 창 초기화
                             
-                            self.showAlert("타이머 수정 완료", actions: [
+                            self.showAlert(msg: "타이머 수정 완료", actions: [
                                 ["닫기" : { [weak self] UIAlertAction in
                                     guard let `self` else { return }
 
@@ -244,22 +244,6 @@ extension AddTimerViewController {
         
         let defaultAction = UIAlertAction(title: "닫기", style: .default, handler: nil)
         alertController.addAction(defaultAction)
-        present(alertController, animated: true, completion: nil)
-    }
-    
-    func showAlert(_ strMsg: String, actions: [[ String: (UIAlertAction)->Void ]]? = nil ) {
-        let alertController = UIAlertController(title: "확인", message: strMsg, preferredStyle: .alert)
-        
-        if let acts = actions {
-            for i in acts {
-                alertController.addAction(.init(title: i.keys.first ?? "", style: .default, handler: i.values.first ))
-            }
-            
-        } else {
-            let defaultAction = UIAlertAction(title: "닫기", style: .default, handler: nil)
-            alertController.addAction(defaultAction)
-        }
-        
         present(alertController, animated: true, completion: nil)
     }
 }

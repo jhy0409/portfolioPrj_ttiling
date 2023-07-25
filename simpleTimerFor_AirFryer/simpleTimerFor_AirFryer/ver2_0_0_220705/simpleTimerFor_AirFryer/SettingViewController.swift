@@ -32,28 +32,35 @@ class SettingTableViewController: UITableViewController, fVmodel {
         return Auth.auth().currentUser
     }
     // MARK: =================== Variables ===================
-    
-    lazy var tblArr: [[String: Any]] = [
-        [
-            "header" : "로그인".uppercased(),
-            "cells" : [
+    var defCells: [[[String: Any]]] {
+        return [
+            [
                 ["title" : "Google", "type": stType.btn, "action": { [weak self] in
                     guard let `self` = self else { return }
+                    
                     print("--> Google tapped\n")
                     self.performGoogleSignInFlow()
                     
                 } ] as [String : Any]
-            ]
-        ],
-        
-        [
-            "header" : "유저정보",
-            "cells" : [
+            ],
+            [
                 ["title" : "user name", "type": stType.lbl, "rightDesc": "-", "action": {}] as [String : Any],
                 ["title" : "email", "type": stType.lbl, "rightDesc": "-", "action": {}],
                 ["title" : "phone number", "type": stType.lbl, "rightDesc": "-", "action": {}]
                 //["title" : "phone number", "type": stType.hide, "action": {}],
             ]
+        ]
+    }
+    
+    lazy var tblArr: [[String: Any]] = [
+        [
+            "header" : "로그인",
+            "cells" : defCells[0]
+        ],
+        
+        [
+            "header" : "유저정보",
+            "cells" : defCells[1]
         ],
         
         [
@@ -208,12 +215,29 @@ class SettingTableViewController: UITableViewController, fVmodel {
     
     // MARK: ------------------- google sign in -------------------
     private func performGoogleSignInFlow() {
-        guard let cell = tableView.cellForRow(at: .init(row: 0, section: 0)) as? settingTVC,
-        let title: String = cell.btn_right.titleLabel?.text else { return }
         
         
-        if title == "로그아웃" {
+        if hasCrntUser {
             print("title is 로그아웃")
+            showAlert(msg: "로그아웃 하시겠습니까", actions: [
+                ["확인" : { [weak self] act in
+                    guard let `self` = self else { return }
+                    do {
+                        try Auth.auth().signOut()
+                        self.tblArr[0].updateValue(self.defCells[0], forKey: "cells")
+                        self.tblArr[1].updateValue(self.defCells[1], forKey: "cells")
+                        self.tableView.reloadData()
+                        
+                    } catch let err {
+                        self.showAlert("알림", err.localizedDescription, nil)
+                    }
+                }],
+                ["닫기" : { [weak self] act in
+                    guard let `self` = self else { return }
+                    self.dismiss(animated: true) }
+                ],
+            ])
+           
         } else {
             // [START headless_google_auth]
             guard let clientID = FirebaseApp.app()?.options.clientID else { return }
@@ -428,6 +452,22 @@ class idxSwitch: UISwitch {
 }
 
 extension UIViewController {
+    func showAlert(msg: String, actions: [[ String: (UIAlertAction)->Void ]]? = nil ) {
+        let alertController = UIAlertController(title: "확인", message: msg, preferredStyle: .alert)
+        
+        if let acts = actions {
+            for i in acts {
+                alertController.addAction(.init(title: i.keys.first ?? "", style: .default, handler: i.values.first ))
+            }
+            
+        } else {
+            let defaultAction = UIAlertAction(title: "닫기", style: .default, handler: nil)
+            alertController.addAction(defaultAction)
+        }
+        
+        present(alertController, animated: true, completion: nil)
+    }
+    
     func currentTime() -> String {
         let now = Date()
         let dateFormatter = DateFormatter()
