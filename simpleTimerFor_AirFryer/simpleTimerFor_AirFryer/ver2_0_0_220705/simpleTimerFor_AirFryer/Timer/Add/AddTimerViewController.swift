@@ -164,7 +164,7 @@ class AddTimerViewController: UIViewController, UITextFieldDelegate, fVmodel {
                 for i in foodShared.foods {
                     if i.foodId == edObj.foodId { // 기존 수정
                         print("\n\nupdate food Func ----> curr id \(i.foodId)")
-                        let food: Food = .init(foodId: edObj.foodId, ondo: Int(ondo)!, hour: Int(hour)!, min: Int(min)!, turn: Int(turn)!, foodType: foodType, isTimerOn: false, foodName: foodName, created: created)
+                        let food: Food = .init(foodId: edObj.foodId, ondo: Int(ondo)!, hour: Int(hour)!, min: Int(min)!, turn: Int(turn)!, foodType: foodType, isTimerOn: false, foodName: foodName, created: created, crType: i.crType)
 
                         foodShared.updateFood(food) { [weak self] in
                             guard let `self` = self else { return }
@@ -188,7 +188,7 @@ class AddTimerViewController: UIViewController, UITextFieldDelegate, fVmodel {
                 
             } else { // 신규추가
                 
-                let food: Food = FoodManager.shared.createFood(ondo: Int(ondo)!, hour: Int(hour)!, min: Int(min)!, turn: Int(turn)!, foodType: foodType, isTimerOn: false, foodName: foodName, created: created)
+                let food: Food = FoodManager.shared.createFood(ondo: Int(ondo)!, hour: Int(hour)!, min: Int(min)!, turn: Int(turn)!, foodType: foodType, isTimerOn: false, foodName: foodName, created: created, crType: "user")
                 
                 foodShared.addFood(food, isLast: true) { [weak self] in // 음식 배열에 추가
                     guard let `self` = self else { return }

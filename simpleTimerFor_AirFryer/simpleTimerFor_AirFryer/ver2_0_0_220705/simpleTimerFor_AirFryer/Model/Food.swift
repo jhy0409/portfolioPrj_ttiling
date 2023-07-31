@@ -20,13 +20,22 @@ struct Food: Codable, Equatable {
     var foodName: String
     
     var created: String
+    /// 생성 타입
+    /// 1. 유저가 직접 생성 : user
+    /// 2. 서버에서 다운 : server
+    let crType: String
+    
+    /// user1 or server2
+    var typeName: String {
+        return "\(crType)\(String(describing: foodId))"
+    }
     
     static func == (lhs: Self, rhs: Self) -> Bool {
         // [] 동등조건 추가 -> 추후 구현
         return lhs.foodId == rhs.foodId
     }
     
-    init(foodId: Int, ondo: Int, hour: Int, min: Int, turn: Int, foodType: String, isTimerOn: Bool, foodName: String, created: String) {
+    init(foodId: Int, ondo: Int, hour: Int, min: Int, turn: Int, foodType: String, isTimerOn: Bool, foodName: String, created: String, crType: String) {
         self.foodId = foodId
         self.ondo = ondo
         self.hour = hour
@@ -36,6 +45,7 @@ struct Food: Codable, Equatable {
         self.isTimerOn = isTimerOn
         self.foodName = foodName
         self.created = created
+        self.crType = crType
     }
     
     mutating func update(ondo: Int, hour: Int, min: Int, turn: Int, foodType: String, isTimerOn: Bool, foodName: String) {
@@ -55,11 +65,11 @@ class FoodManager {
     
     var foods: [Food] = []
     
-    func createFood(ondo: Int, hour: Int, min: Int, turn: Int, foodType: String, isTimerOn: Bool, foodName: String, created: String) -> Food {
+    func createFood(ondo: Int, hour: Int, min: Int, turn: Int, foodType: String, isTimerOn: Bool, foodName: String, created: String, crType: String) -> Food {
         let nextId = FoodManager.lastId + 1
         FoodManager.lastId = nextId
         return Food(foodId: nextId, ondo: ondo, hour: hour, min: min,
-                    turn: turn, foodType: foodType, isTimerOn: isTimerOn, foodName: foodName, created: created)
+                    turn: turn, foodType: foodType, isTimerOn: isTimerOn, foodName: foodName, created: created, crType: crType)
     }
     
     func addFood(_ food: Food) {

@@ -118,8 +118,8 @@ class SettingTableViewController: UITableViewController, fVmodel {
             sender.isEnabled = false // 다운시작 - 비활성화
             print("\n---> [설정창 스위치 - On] 서버데이터 받기 toggle")
             
-            getData(of:  0...17) {
-                DispatchQueue.main.async {
+            getData(of:  0...17) { [weak self] in
+                guard let `self` else { return }
                 
                     print("\n--> [ 함수실행 ] add getData : \n---> [ 타이머 전체 수 ] foodsArr current count : \(self.foodShared.manager.foods.count) ")
                     
@@ -129,7 +129,6 @@ class SettingTableViewController: UITableViewController, fVmodel {
                         sender.isEnabled = true // 다운완료 후 동작 - 스위치 끄기
                         sender.isOn = false
                     })
-                }
                 
             }
             
@@ -155,6 +154,7 @@ class SettingTableViewController: UITableViewController, fVmodel {
         
         let ref: DatabaseReference! = Database.database().reference()
         for i in closedRange {
+            
             ref.child("sample").child(String(i)).observeSingleEvent(of: .value, with: { [weak self] snapshot in
                 guard let `self` = self else { return }
                 
@@ -171,10 +171,16 @@ class SettingTableViewController: UITableViewController, fVmodel {
                 let v8_foodTurnNum  = value["turningFood"] as? Int ?? 0
                 let created         = self.currentTime()
                 
-                let food: Food = self.foodShared.manager.createFood(ondo: v7_foodOndo, hour: v4_foodHour, min: v6_foodMin, turn: v8_foodTurnNum, foodType: v3_foodType, isTimerOn: v5_timerOn, foodName: v2_foodName, created: created)
+                let food: Food = self.foodShared.manager.createFood(ondo: v7_foodOndo, hour: v4_foodHour, min: v6_foodMin, turn: v8_foodTurnNum, foodType: v3_foodType, isTimerOn: v5_timerOn, foodName: v2_foodName, created: created, crType: "server")
+            
+                /// 생성타입이 서버 && 이름이 같지 않을 때 추가함
+                let hasValue: Bool = foodShared.foods.filter { $0.crType == "server" && $0.foodName == food.foodName }.count > 0
                 
-                self.foodShared.addFood(food, isLast: i == closedRange.upperBound, completion: completion)
-               
+                if !hasValue {
+                    print("--> addFood from server = \(food.foodName)\t\(food.typeName)\((i+1) % 5 == 0 ? "\n" : "")")
+                    self.foodShared.addFood(food, isLast: i == closedRange.upperBound, completion: completion)
+                }
+                
             })
             
             
