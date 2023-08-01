@@ -129,6 +129,10 @@ class AddTimerViewController: UIViewController, UITextFieldDelegate, fVmodel {
         
         if let fObj = editFoodObj {
             settingAlltxtField(obj: fObj)
+            
+            for i in 0..<foodTypeArr.count {
+                foodTypeArr[i].isSelected = foodTypeArr[i].type == fObj.foodType
+            }
         }
     }
     

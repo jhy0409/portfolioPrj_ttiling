@@ -118,19 +118,28 @@ class SettingTableViewController: UITableViewController, fVmodel {
             sender.isEnabled = false // 다운시작 - 비활성화
             print("\n---> [설정창 스위치 - On] 서버데이터 받기 toggle")
             
-            getData(of:  0...17) { [weak self] in
-                guard let `self` else { return }
-                
-                    print("\n--> [ 함수실행 ] add getData : \n---> [ 타이머 전체 수 ] foodsArr current count : \(self.foodShared.manager.foods.count) ")
+            getData(completion: [
+                { [weak self] in
+                    guard let `self` else { return }
                     
-                    // [ㅇ] 다운완료 알림창
-                    // [] 다운 후 객체 정렬
-                    self.showAlert("알림","다운로드가 완료되었습니다.", {
+                        print("\n--> [ 함수실행 ] add getData : \n---> [ 타이머 전체 수 ] foodsArr current count : \(self.foodShared.manager.foods.count) ")
+                        
+                        // [ㅇ] 다운완료 알림창
+                        // [] 다운 후 객체 정렬
+                        self.showAlert("알림","다운로드가 완료되었습니다.", {
+                            sender.isEnabled = true // 다운완료 후 동작 - 스위치 끄기
+                            sender.isOn = false
+                        })
+                    
+                },
+                
+                {
+                    self.showAlert("알림", "현재 추가된 타이머와 동일합니다.") {
                         sender.isEnabled = true // 다운완료 후 동작 - 스위치 끄기
                         sender.isOn = false
-                    })
-                
-            }
+                    }
+                }
+            ])
             
            
         }
@@ -149,47 +158,56 @@ class SettingTableViewController: UITableViewController, fVmodel {
         }
     }
     
-    func getData(of closedRange: ClosedRange<Int>, _ completion: (()->Void)? = nil ) {
+    func getData(completion: [()->Void]? = nil ) {
         //var v1_foodId = 0
         
         let ref: DatabaseReference! = Database.database().reference()
-        for i in closedRange {
+
+        // [ㅇ] 다운완료 알림창
+        // [] 다운 후 객체 정렬
+        ref.child("sample").getData { [weak self] err, snapshot in
+            guard let `self` = self else { return }
+
+            let prevFoods = self.foodShared.foods
             
-            ref.child("sample").child(String(i)).observeSingleEvent(of: .value, with: { [weak self] snapshot in
-                guard let `self` = self else { return }
-                
-                let value = snapshot.value as? NSDictionary ?? [:]
-                
-                //v1_foodId = value?["foodId"] as? Int ?? 0
-                let crType          = value["crType"] as? String ?? "server"
-                let foodName        = value["foodName"] as? String ?? "NONE"
-                let foodType        = value["foodType"] as? String ?? "NONE"
-                let hour            = value["hour"] as? Int ?? 0
-                let isTimerOn       = value["isTimerOn"] as? Bool ?? false
-                let min             = value["min"] as? Int ?? 0
-                
-                let ondo            = value["ondo"] as? Int ?? 0
-                let turningFood     = value["turningFood"] as? Int ?? 0
-                let created         = self.currentTime()
-                
-                let food: Food = self.foodShared.manager.createFood(ondo: ondo, hour: hour, min: min, turn: turningFood, foodType: foodType, isTimerOn: isTimerOn, foodName: foodName, created: created, crType: crType)
-            
-                /// 생성타입이 서버값과 같지 않을 때 추가함
-                let hasValue: Bool = foodShared.foods.filter { $0.crType == crType }.count > 0
-                
-                let isLast: Bool = i == closedRange.upperBound
-                
-                if !hasValue {
-                    self.foodShared.addFood(food, isLast: isLast, completion: completion)
-                    print("--> addFood from server = \(food.foodName)\t\(food.crType)\((i+1) % 5 == 0 ? "\n" : "")")
+            if let arrs = snapshot.value as? Array<NSDictionary> {
+                for (i, value) in arrs.enumerated() {
+                    
+                    //v1_foodId = value?["foodId"] as? Int ?? 0
+                    let crType          = value["crType"] as? String ?? "server"
+                    let foodName        = value["foodName"] as? String ?? "NONE"
+                    let foodType        = value["foodType"] as? String ?? "NONE"
+                    let hour            = value["hour"] as? Int ?? 0
+                    let isTimerOn       = value["isTimerOn"] as? Bool ?? false
+                    let min             = value["min"] as? Int ?? 0
+                    
+                    let ondo            = value["ondo"] as? Int ?? 0
+                    let turningFood     = value["turningFood"] as? Int ?? 0
+                    let created         = self.currentTime()
+                    
+                    let food: Food = self.foodShared.manager.createFood(ondo: ondo, hour: hour, min: min, turn: turningFood, foodType: foodType, isTimerOn: isTimerOn, foodName: foodName, created: created, crType: crType)
+                    
+                    /// 생성타입이 서버값과 같지 않을 때 추가함
+                    let hasValue: Bool = foodShared.foods.filter { $0.crType == crType }.count > 0
+                    
+                    let isLast: Bool = i == (arrs.count - 1)
+                    
+                    if !hasValue {
+                        self.foodShared.addFood(food, isLast: isLast, completion: completion?[0])
+                        print("--> addFood from server = \(food.foodName)\t\(food.crType)\((i+1) % 5 == 0 ? "\n" : "")")
+                    }
                 }
                 
+                if prevFoods == self.foodShared.foods {
+                    DispatchQueue.main.async {
+                        completion?[1]()
+                    }
+                }
                 
-            })
+            }
             
             
         }
-        
     }
     
     func showAlert(_ title: String, _ strMsg: String, _ completion: (()->())? ) {

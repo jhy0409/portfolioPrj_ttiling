@@ -146,6 +146,7 @@ class FoodViewModel {
     }
     
     func loadFoods(completion: (()->Void)? = nil) {
+        print("\n--> 호출 loadFoods")
         manager.retrieveFood(completion: completion)
     }
     

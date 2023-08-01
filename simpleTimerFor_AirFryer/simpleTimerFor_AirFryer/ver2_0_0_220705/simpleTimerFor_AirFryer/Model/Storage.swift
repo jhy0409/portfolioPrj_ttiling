@@ -45,7 +45,10 @@ public class Storage {
                 try FileManager.default.removeItem(at: url)
             }
             FileManager.default.createFile(atPath: url.path, contents: data, attributes: nil)
-            competion?()
+            
+            DispatchQueue.main.async {
+                competion?()
+            }
             
         } catch let error {
             print("---> Failed to store msg: \(error.localizedDescription)")

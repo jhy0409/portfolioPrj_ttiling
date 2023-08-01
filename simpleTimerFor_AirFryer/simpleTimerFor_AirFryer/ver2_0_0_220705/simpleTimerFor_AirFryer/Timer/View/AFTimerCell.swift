@@ -40,6 +40,8 @@ class AFTimerCell: UICollectionViewCell {
     var editDel: fVmodel?
     
     func updateUI(food: Food?) {
+        tmpFoodFromCell = food
+        
         guard let food      = food else { return }
         foodTitleLabel.text = "\(food.foodName)"
         ondoLabel.text      = "\(food.ondo)℃" // 온도

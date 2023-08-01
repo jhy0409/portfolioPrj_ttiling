@@ -74,7 +74,6 @@ extension AFTimerViewController: UICollectionViewDataSource {
         
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "AFTimerCell", for: indexPath) as? AFTimerCell else { return UICollectionViewCell() }
         let food: Food = foodShared.foods[indexPath.item]
-        cell.tmpFoodFromCell = food
         cell.updateUI(food: food)
         cell.viewController = self
         cell.editDel = self
