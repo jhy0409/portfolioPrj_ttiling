@@ -23,12 +23,7 @@ struct Food: Codable, Equatable {
     /// 생성 타입
     /// 1. 유저가 직접 생성 : user
     /// 2. 서버에서 다운 : server
-    let crType: String
-    
-    /// user1 or server2
-    var typeName: String {
-        return "\(crType)\(String(describing: foodId))"
-    }
+    var crType: String
     
     static func == (lhs: Self, rhs: Self) -> Bool {
         // [] 동등조건 추가 -> 추후 구현

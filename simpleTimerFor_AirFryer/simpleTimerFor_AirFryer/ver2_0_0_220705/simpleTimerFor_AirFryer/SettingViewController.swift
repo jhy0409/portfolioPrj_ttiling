@@ -161,25 +161,29 @@ class SettingTableViewController: UITableViewController, fVmodel {
                 let value = snapshot.value as? NSDictionary ?? [:]
                 
                 //v1_foodId = value?["foodId"] as? Int ?? 0
-                let v2_foodName     = value["foodName"] as? String ?? "NONE"
-                let v3_foodType     = value["foodType"] as? String ?? "NONE"
-                let v4_foodHour     = value["hour"] as? Int ?? 0
-                let v5_timerOn      = value["isTimerOn"] as? Bool ?? false
-                let v6_foodMin      = value["min"] as? Int ?? 0
+                let crType          = value["crType"] as? String ?? "server"
+                let foodName        = value["foodName"] as? String ?? "NONE"
+                let foodType        = value["foodType"] as? String ?? "NONE"
+                let hour            = value["hour"] as? Int ?? 0
+                let isTimerOn       = value["isTimerOn"] as? Bool ?? false
+                let min             = value["min"] as? Int ?? 0
                 
-                let v7_foodOndo     = value["ondo"] as? Int ?? 0
-                let v8_foodTurnNum  = value["turningFood"] as? Int ?? 0
+                let ondo            = value["ondo"] as? Int ?? 0
+                let turningFood     = value["turningFood"] as? Int ?? 0
                 let created         = self.currentTime()
                 
-                let food: Food = self.foodShared.manager.createFood(ondo: v7_foodOndo, hour: v4_foodHour, min: v6_foodMin, turn: v8_foodTurnNum, foodType: v3_foodType, isTimerOn: v5_timerOn, foodName: v2_foodName, created: created, crType: "server")
+                let food: Food = self.foodShared.manager.createFood(ondo: ondo, hour: hour, min: min, turn: turningFood, foodType: foodType, isTimerOn: isTimerOn, foodName: foodName, created: created, crType: crType)
             
-                /// 생성타입이 서버 && 이름이 같지 않을 때 추가함
-                let hasValue: Bool = foodShared.foods.filter { $0.crType == "server" && $0.foodName == food.foodName }.count > 0
+                /// 생성타입이 서버값과 같지 않을 때 추가함
+                let hasValue: Bool = foodShared.foods.filter { $0.crType == crType }.count > 0
+                
+                let isLast: Bool = i == closedRange.upperBound
                 
                 if !hasValue {
-                    print("--> addFood from server = \(food.foodName)\t\(food.typeName)\((i+1) % 5 == 0 ? "\n" : "")")
-                    self.foodShared.addFood(food, isLast: i == closedRange.upperBound, completion: completion)
+                    self.foodShared.addFood(food, isLast: isLast, completion: completion)
+                    print("--> addFood from server = \(food.foodName)\t\(food.crType)\((i+1) % 5 == 0 ? "\n" : "")")
                 }
+                
                 
             })
             

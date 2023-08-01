@@ -188,7 +188,9 @@ class AddTimerViewController: UIViewController, UITextFieldDelegate, fVmodel {
                 
             } else { // 신규추가
                 
-                let food: Food = FoodManager.shared.createFood(ondo: Int(ondo)!, hour: Int(hour)!, min: Int(min)!, turn: Int(turn)!, foodType: foodType, isTimerOn: false, foodName: foodName, created: created, crType: "user")
+                var food: Food = FoodManager.shared.createFood(ondo: Int(ondo)!, hour: Int(hour)!, min: Int(min)!, turn: Int(turn)!, foodType: foodType, isTimerOn: false, foodName: foodName, created: created, crType: "")
+                
+                food.crType = "user\(food.foodId)"
                 
                 foodShared.addFood(food, isLast: true) { [weak self] in // 음식 배열에 추가
                     guard let `self` = self else { return }
