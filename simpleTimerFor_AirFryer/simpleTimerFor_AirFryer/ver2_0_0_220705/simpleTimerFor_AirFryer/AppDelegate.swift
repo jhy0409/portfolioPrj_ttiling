@@ -18,7 +18,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, fVmodel {
         UNUserNotificationCenter.current().delegate = self
         FirebaseApp.configure()
         
-        foodShared.loadFoods()
+        foodShared.loadFoods(sort: .name)
         return true
     }
 

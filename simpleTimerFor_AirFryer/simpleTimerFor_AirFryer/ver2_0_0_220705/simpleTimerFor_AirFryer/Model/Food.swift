@@ -100,10 +100,23 @@ class FoodManager {
         Storage.store(foods, to: .documents, as: "foods.json", completion)
     }
     
-    func retrieveFood(completion: (()->Void)? = nil) {
+    func retrieveFood(sort: SortType, completion: (()->Void)? = nil) {
         foods = Storage.retrive("foods.json", from: .documents, as: [Food].self, completion: completion) ?? []
         
-        let lastId = foods.last?.foodId ?? 0
+        switch sort {
+        case .name:
+            foods = foods.sorted(by: { $0.foodName.lowercased() < $1.foodName.lowercased() })
+        
+        case .latest:
+            foods = foods.sorted(by: { $0.created > $1.created })
+        }
+        
+        let lastId = foods.sorted { $0.foodId > $1.foodId }.first?.foodId ?? 0
+        
+        //let tmp = foods.sorted { $0.foodId > $1.foodId }
+        //tmp.forEach { print("--> food id\($0.foodId)") }
+        //print("\n--> lastId = \(lastId)")
+        
         FoodManager.lastId = lastId
     }
     
@@ -146,9 +159,9 @@ class FoodViewModel {
         manager.updateFood(food, completion: completion)
     }
     
-    func loadFoods(completion: (()->Void)? = nil) {
-        print("\n--> 호출 loadFoods")
-        manager.retrieveFood(completion: completion)
+    func loadFoods(sort: SortType, completion: (()->Void)? = nil) {
+        print("\n--> 호출 loadFoods with sort option")
+        manager.retrieveFood(sort: sort, completion: completion)
     }
     
     func deleteAllFoods() {
