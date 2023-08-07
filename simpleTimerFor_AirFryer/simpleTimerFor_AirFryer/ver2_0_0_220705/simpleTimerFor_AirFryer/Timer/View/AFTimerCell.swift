@@ -20,6 +20,9 @@ class AFTimerCell: UICollectionViewCell {
     @IBOutlet weak var timerSwitch: UISwitch!
     var cornerRadius: CGFloat = 10
     
+    @IBOutlet weak var lblFrom: UILabel!
+    @IBOutlet weak var lblCreated: UILabel!
+    
     private let uiLabelCGColArr = [CGColor(red: 1, green: 0, blue: 0, alpha: 0.2),
                                    CGColor(red: 0.9254902005, green: 0.2352941185, blue: 0.1019607857, alpha: 0.2),
                                    CGColor(red: 0.9686274529, green: 0.78039217, blue: 0.3450980484, alpha: 0.2),
@@ -43,6 +46,10 @@ class AFTimerCell: UICollectionViewCell {
         tmpFoodFromCell = food
         
         guard let food      = food else { return }
+
+        lblCreated.text     = food.created
+        lblFrom.text        = food.crType.replacingOccurrences(of: "sv", with: "서버").replacingOccurrences(of: "user", with: "유저")
+        
         foodTitleLabel.text = "\(food.foodName)"
         ondoLabel.text      = "\(food.ondo)℃" // 온도
         

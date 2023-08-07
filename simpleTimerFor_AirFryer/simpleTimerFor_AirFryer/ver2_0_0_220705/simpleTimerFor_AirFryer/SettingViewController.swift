@@ -499,7 +499,7 @@ extension UIViewController {
     func currentTime() -> String {
         let now = Date()
         let dateFormatter = DateFormatter()
-        
+        dateFormatter.locale = .init(identifier: "ko_KR")
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
         
         return dateFormatter.string(from: now)

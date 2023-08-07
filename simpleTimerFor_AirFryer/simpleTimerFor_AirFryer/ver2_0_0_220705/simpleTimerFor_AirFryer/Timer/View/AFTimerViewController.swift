@@ -105,7 +105,7 @@ extension AFTimerViewController: UICollectionViewDelegateFlowLayout {
         let margin: CGFloat = 18
         let width = (collectionView.bounds.width - itemSpacing - (margin * 2)) / 2
         //let height = width + 150
-        let height: CGFloat = 340
+        let height: CGFloat = 360
         return CGSize(width: width, height: height)
     }
     

@@ -43,7 +43,7 @@ struct Food: Codable, Equatable {
         self.crType = crType
     }
     
-    mutating func update(ondo: Int, hour: Int, min: Int, turn: Int, foodType: String, isTimerOn: Bool, foodName: String) {
+    mutating func update(ondo: Int, hour: Int, min: Int, turn: Int, foodType: String, isTimerOn: Bool, foodName: String, created: String) {
         self.ondo = ondo
         self.hour = hour
         self.min = min
@@ -51,6 +51,7 @@ struct Food: Codable, Equatable {
         self.foodType = foodType
         self.isTimerOn = isTimerOn
         self.foodName = foodName
+        self.created = created
     }
 }
 
@@ -87,7 +88,7 @@ class FoodManager {
     func updateFood(_ food: Food, completion: (()->Void)? = nil) {
         guard let index = foods.firstIndex(of: food) else { return }
         print("\n [func updateFood] currunt index is ---->\(index)")
-        foods[index].update(ondo: food.ondo, hour: food.hour, min: food.min, turn: food.turningFood, foodType: food.foodType, isTimerOn: food.isTimerOn, foodName: food.foodName)
+        foods[index].update(ondo: food.ondo, hour: food.hour, min: food.min, turn: food.turningFood, foodType: food.foodType, isTimerOn: food.isTimerOn, foodName: food.foodName, created: food.created)
          saveFood(completion)
     }
     
