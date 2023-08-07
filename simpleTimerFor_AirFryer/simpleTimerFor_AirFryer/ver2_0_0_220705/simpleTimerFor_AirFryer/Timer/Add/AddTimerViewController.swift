@@ -127,15 +127,27 @@ class AddTimerViewController: UIViewController, UITextFieldDelegate, fVmodel {
         let tapG: UITapGestureRecognizer = .init(target: self, action: #selector(endEdit))
         containerView.addGestureRecognizer(tapG)
         
+       
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+     
         if let fObj = editFoodObj {
             settingAlltxtField(obj: fObj)
             
             for i in 0..<foodTypeArr.count {
                 foodTypeArr[i].isSelected = foodTypeArr[i].type == fObj.foodType
             }
+            
+        } else {
+            for i in 0..<foodTypeArr.count {
+                foodTypeArr[i].isSelected = i == 0
+                cvFoodType.reloadData()
+            }
         }
+        
     }
-    
     
     // [ㅇ] tmpFood에서 현재타이머의 속성 전체 가져와서 세팅
     func settingAlltxtField(obj: Food) {
