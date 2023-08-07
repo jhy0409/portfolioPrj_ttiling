@@ -13,6 +13,8 @@
 		685D6E9D26A56AAF008CE5F0 /* SettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 685D6E9C26A56AAF008CE5F0 /* SettingViewController.swift */; };
 		6873AF3E26AC1870004F2AFA /* EditTimerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6873AF3D26AC1870004F2AFA /* EditTimerViewController.swift */; };
 		6874AA5C26A0F87400E2891F /* AddTimerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6874AA5B26A0F87400E2891F /* AddTimerViewController.swift */; };
+		6883E68B2A8117E500A86B79 /* AFHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6883E6892A8117E500A86B79 /* AFHeaderView.swift */; };
+		6883E68C2A8117E500A86B79 /* AFHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6883E68A2A8117E500A86B79 /* AFHeaderView.xib */; };
 		688CB2C82A548BDE0036E7F5 /* AddFoodTypeCVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 688CB2C72A548BDE0036E7F5 /* AddFoodTypeCVC.swift */; };
 		68F4179B26A5805600C28EF3 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 68F4179A26A5805600C28EF3 /* GoogleService-Info.plist */; };
 		68F885B026A068FD000A49BA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68F885AF26A068FD000A49BA /* AppDelegate.swift */; };
@@ -32,6 +34,8 @@
 		685D6E9C26A56AAF008CE5F0 /* SettingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingViewController.swift; sourceTree = "<group>"; };
 		6873AF3D26AC1870004F2AFA /* EditTimerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditTimerViewController.swift; sourceTree = "<group>"; };
 		6874AA5B26A0F87400E2891F /* AddTimerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTimerViewController.swift; sourceTree = "<group>"; };
+		6883E6892A8117E500A86B79 /* AFHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AFHeaderView.swift; sourceTree = "<group>"; };
+		6883E68A2A8117E500A86B79 /* AFHeaderView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AFHeaderView.xib; sourceTree = "<group>"; };
 		688CB2C72A548BDE0036E7F5 /* AddFoodTypeCVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFoodTypeCVC.swift; sourceTree = "<group>"; };
 		68F4179A26A5805600C28EF3 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../GoogleService-Info.plist"; sourceTree = "<group>"; };
 		68F885AC26A068FD000A49BA /* ttiling.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ttiling.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -138,6 +142,8 @@
 				685D6E9E26A56DB6008CE5F0 /* Model */,
 				68F885AF26A068FD000A49BA /* AppDelegate.swift */,
 				68F885B126A068FD000A49BA /* SceneDelegate.swift */,
+				6883E6892A8117E500A86B79 /* AFHeaderView.swift */,
+				6883E68A2A8117E500A86B79 /* AFHeaderView.xib */,
 				68F885B526A068FD000A49BA /* Main.storyboard */,
 				68F885BA26A068FE000A49BA /* LaunchScreen.storyboard */,
 				68F885BD26A068FE000A49BA /* Info.plist */,
@@ -216,6 +222,7 @@
 			files = (
 				68F885BC26A068FE000A49BA /* LaunchScreen.storyboard in Resources */,
 				68F4179B26A5805600C28EF3 /* GoogleService-Info.plist in Resources */,
+				6883E68C2A8117E500A86B79 /* AFHeaderView.xib in Resources */,
 				680FBCFF26ABF68B0068AA11 /* Assets.xcassets in Resources */,
 				68F885B726A068FD000A49BA /* Main.storyboard in Resources */,
 			);
@@ -279,6 +286,7 @@
 				68F885B026A068FD000A49BA /* AppDelegate.swift in Sources */,
 				68F885B226A068FD000A49BA /* SceneDelegate.swift in Sources */,
 				688CB2C82A548BDE0036E7F5 /* AddFoodTypeCVC.swift in Sources */,
+				6883E68B2A8117E500A86B79 /* AFHeaderView.swift in Sources */,
 				6873AF3E26AC1870004F2AFA /* EditTimerViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

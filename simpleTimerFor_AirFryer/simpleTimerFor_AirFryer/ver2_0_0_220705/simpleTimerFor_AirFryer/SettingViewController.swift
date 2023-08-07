@@ -500,7 +500,7 @@ extension UIViewController {
         let now = Date()
         let dateFormatter = DateFormatter()
         dateFormatter.locale = .init(identifier: "ko_KR")
-        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        dateFormatter.dateFormat = "yyMMdd HH:mm:ss"
         
         return dateFormatter.string(from: now)
     }

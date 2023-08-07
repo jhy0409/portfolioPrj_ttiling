@@ -725,7 +725,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="egm-kL-rkp" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="945" y="769"/>
+            <point key="canvasLocation" x="901" y="769"/>
         </scene>
         <!--EditTimer-->
         <scene sceneID="mvy-IF-IdC">
