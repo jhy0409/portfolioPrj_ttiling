@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21679"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionReusableView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="AFHeaderView" id="U6b-Vx-4bR" customClass="AFHeaderView" customModule="ttiling" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="50"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <subviews>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="PfN-3g-xkL">
+                    <rect key="frame" x="0.0" y="0.0" width="320" height="50"/>
+                    <subviews>
+                        <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="Vrd-fk-bVb">
+                            <rect key="frame" x="80" y="7.6666666666666679" width="160" height="36"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="35" id="pmG-7b-BYY"/>
+                            </constraints>
+                            <segments>
+                                <segment title="서버"/>
+                                <segment title="유저"/>
+                            </segments>
+                        </segmentedControl>
+                    </subviews>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <constraints>
+                        <constraint firstItem="Vrd-fk-bVb" firstAttribute="width" secondItem="PfN-3g-xkL" secondAttribute="width" multiplier="0.5" id="dhE-iZ-jkY"/>
+                        <constraint firstItem="Vrd-fk-bVb" firstAttribute="centerX" secondItem="PfN-3g-xkL" secondAttribute="centerX" id="gCg-0a-tYl"/>
+                        <constraint firstItem="Vrd-fk-bVb" firstAttribute="centerY" secondItem="PfN-3g-xkL" secondAttribute="centerY" id="wqO-Jj-arh"/>
+                    </constraints>
+                </view>
+            </subviews>
+            <constraints>
+                <constraint firstItem="PfN-3g-xkL" firstAttribute="leading" secondItem="U6b-Vx-4bR" secondAttribute="leading" id="CZx-ps-7x5"/>
+                <constraint firstAttribute="trailing" secondItem="PfN-3g-xkL" secondAttribute="trailing" id="Vcd-KN-J2s"/>
+                <constraint firstAttribute="bottom" secondItem="PfN-3g-xkL" secondAttribute="bottom" id="vZU-2C-fDy"/>
+                <constraint firstItem="PfN-3g-xkL" firstAttribute="top" secondItem="U6b-Vx-4bR" secondAttribute="top" id="wzi-6W-oPa"/>
+            </constraints>
+            <connections>
+                <outlet property="containerView" destination="PfN-3g-xkL" id="R4J-cM-UeO"/>
+                <outlet property="sg_svUser" destination="Vrd-fk-bVb" id="nZs-I5-D2t"/>
+            </connections>
+            <point key="canvasLocation" x="37" y="-12"/>
+        </collectionReusableView>
+    </objects>
+</document>

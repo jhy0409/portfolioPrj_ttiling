@@ -29,6 +29,10 @@ class AFTimerViewController: UIViewController, fVmodel {
         
         collectionView.register(.init(nibName: "AFHeaderView", bundle: nil), forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "AFHeaderView")
         requestAuthNoti() // 사용자에게 알림 권한 요청
+        
+        if let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout {
+            layout.sectionHeadersPinToVisibleBounds = true
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
