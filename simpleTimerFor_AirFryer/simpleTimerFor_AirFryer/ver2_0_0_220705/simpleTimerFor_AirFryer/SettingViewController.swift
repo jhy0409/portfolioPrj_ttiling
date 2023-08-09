@@ -111,6 +111,12 @@ class SettingTableViewController: UITableViewController, fVmodel {
         }
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        tableView.reloadData()
+    }
+    
     // [ㅇ] firebase에서 내려받기
     @objc func downToggle(_ sender: idxSwitch) {
         // [ㅇ] toggle버튼 ON -> 기본 json file 다운로드
@@ -123,12 +129,14 @@ class SettingTableViewController: UITableViewController, fVmodel {
                     guard let `self` else { return }
                     
                         print("\n--> [ 함수실행 ] add getData : \n---> [ 타이머 전체 수 ] foodsArr current count : \(self.foodShared.manager.foods.count) ")
+                                self.tableView.reloadData()
                         
                         // [ㅇ] 다운완료 알림창
                         // [] 다운 후 객체 정렬
                         self.showAlert("알림","다운로드가 완료되었습니다.", {
                             sender.isEnabled = true // 다운완료 후 동작 - 스위치 끄기
                             sender.isOn = false
+                            self.tableView.reloadData()
                         })
                     
                 },
@@ -233,6 +241,8 @@ class SettingTableViewController: UITableViewController, fVmodel {
         foodShared.deleteAllFoods()
         print("삭제 ㅇ : \(foodShared.foods.count)")
         sender.isOn = false
+        
+        tableView.reloadData()
     }
     
     func noClick(_ sender: idxSwitch) {
@@ -384,10 +394,12 @@ class SettingTableViewController: UITableViewController, fVmodel {
                 
                 switch idx {
                 case "샘플받기":
+                    cell.swch.isEnabled = hasCrntUser
                     cell.swch.addTarget(self, action: #selector(downToggle), for: .touchUpInside)
                     
                 case "삭제":
                     print("삭제")
+                    cell.swch.isEnabled = foodShared.foods.count > 0
                     cell.swch.addTarget(self, action: #selector(delAllFoodArr), for: .touchUpInside)
                     
                 default:
