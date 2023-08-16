@@ -145,17 +145,17 @@ class SettingTableViewController: UITableViewController, fVmodel {
                 
                 ref.child("users/\(usrEmail)").removeValue()
                 
-                for (i, obj) in foodShared.foods.enumerated() {
-                    ref.child("users/\(usrEmail)/\(i)/foodName").setValue(obj.foodName)
-                    ref.child("users/\(usrEmail)/\(i)/ondo").setValue(obj.ondo)
-                    ref.child("users/\(usrEmail)/\(i)/hour").setValue(obj.hour)
-                    ref.child("users/\(usrEmail)/\(i)/min").setValue(obj.min)
-                    ref.child("users/\(usrEmail)/\(i)/turningFood").setValue(obj.turningFood)
-                    ref.child("users/\(usrEmail)/\(i)/foodType").setValue(obj.foodType)
+                for (_, obj) in foodShared.foods.enumerated() {
+                    ref.child("users/\(usrEmail)/\(obj.crType)/foodName").setValue(obj.foodName)
+                    ref.child("users/\(usrEmail)/\(obj.crType)/ondo").setValue(obj.ondo)
+                    ref.child("users/\(usrEmail)/\(obj.crType)/hour").setValue(obj.hour)
+                    ref.child("users/\(usrEmail)/\(obj.crType)/min").setValue(obj.min)
+                    ref.child("users/\(usrEmail)/\(obj.crType)/turningFood").setValue(obj.turningFood)
+                    ref.child("users/\(usrEmail)/\(obj.crType)/foodType").setValue(obj.foodType)
                     
-                    ref.child("users/\(usrEmail)/\(i)/crType").setValue(obj.crType)
-                    ref.child("users/\(usrEmail)/\(i)/isTimerOn").setValue(obj.isTimerOn)
-                    ref.child("users/\(usrEmail)/\(i)/foodId").setValue(obj.foodId)
+                    ref.child("users/\(usrEmail)/\(obj.crType)/crType").setValue(obj.crType)
+                    ref.child("users/\(usrEmail)/\(obj.crType)/isTimerOn").setValue(obj.isTimerOn)
+                    ref.child("users/\(usrEmail)/\(obj.crType)/foodId").setValue(obj.foodId)
                 }
             }
         }
@@ -523,6 +523,7 @@ class settingTVC: UITableViewCell {
             case btn_right:
                 btn_right.setImage(.init(systemName: hasCrntUser ? "" : "chevron.right"), for: .normal)
                 btn_right.setTitle(hasCrntUser ? "로그아웃" : "", for: .normal)
+                btn_right.sizeToFit()
                 
             default:
                 break
