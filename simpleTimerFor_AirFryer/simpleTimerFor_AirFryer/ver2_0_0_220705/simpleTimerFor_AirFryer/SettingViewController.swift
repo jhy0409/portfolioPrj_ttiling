@@ -251,6 +251,23 @@ class SettingTableViewController: UITableViewController, fVmodel {
     }
     
     
+    @objc func showCellAlert(sender: UIButton) {
+        let sdid = sender.restorationIdentifier ?? ""
+        
+        print("--> sdid = \(sdid)\n")
+        
+        switch sdid {
+        case "샘플받기":
+            showAlert(msg: "구글 계정 로그인이 필요합니다.")
+            
+        case "삭제":
+            showAlert(msg: "조리시간 탭의 리스트 수가 \n1개이상이어야 합니다.")
+            
+        default:
+            break
+        }
+    }
+    
     // MARK: ------------------- google sign in -------------------
     private func performGoogleSignInFlow() {
         
@@ -396,11 +413,19 @@ class SettingTableViewController: UITableViewController, fVmodel {
                 case "샘플받기":
                     cell.swch.isEnabled = hasCrntUser
                     cell.swch.addTarget(self, action: #selector(downToggle), for: .touchUpInside)
+
+                    cell.btnSwch.isHidden = cell.swch.isEnabled
+                    cell.btnSwch.restorationIdentifier = idx
+                    cell.btnSwch.addTarget(self, action: #selector(showCellAlert), for: .touchUpInside)
                     
                 case "삭제":
                     print("삭제")
                     cell.swch.isEnabled = foodShared.foods.count > 0
                     cell.swch.addTarget(self, action: #selector(delAllFoodArr), for: .touchUpInside)
+                    
+                    cell.btnSwch.isHidden = cell.swch.isEnabled
+                    cell.btnSwch.restorationIdentifier = idx
+                    cell.btnSwch.addTarget(self, action: #selector(showCellAlert), for: .touchUpInside)
                     
                 default:
                     break
@@ -434,12 +459,16 @@ class settingTVC: UITableViewCell {
     @IBOutlet weak var viewRhtAccWidth: NSLayoutConstraint!
     
     @IBOutlet weak var lbl_desc: UILabel!
+
+    @IBOutlet weak var swchView: UIView!
     @IBOutlet weak var swch: idxSwitch!
+    @IBOutlet weak var btnSwch: UIButton!
+    
     @IBOutlet weak var btn_right: UIButton!
     
     
     func setView(obj: (title: String, type: stType, isOn: Bool, rightDesc: String )) {
-        let views: [UIView] = [lbl_desc, swch, btn_right]
+        let views: [UIView] = [lbl_desc, swchView, btn_right]
         
         for (i, viewObj) in views.enumerated() {
             viewObj.tag                 = i + 1
