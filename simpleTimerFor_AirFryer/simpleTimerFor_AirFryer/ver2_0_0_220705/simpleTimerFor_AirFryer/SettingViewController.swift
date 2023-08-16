@@ -66,7 +66,8 @@ class SettingTableViewController: UITableViewController, fVmodel {
         [
             "header" : "설정",
             "cells" : [
-                ["title" : "서버에서 샘플받기", "type": stType.swch, "isOn": false, "action": {}] as [String : Any],
+                ["title" : "서버와 연동", "type": stType.swch, "isOn": fetchServer, "action": {}] as [String : Any],
+                ["title" : "서버에서 샘플받기", "type": stType.swch, "isOn": false, "action": {}],
                 ["title" : "타이머 전체 삭제", "type": stType.swch, "isOn": false, "action": {}],
                 ["title" : "버전 정보", "type": stType.lbl, "rightDesc": "\(self.versionStr)", "action": {}],
             ]
@@ -115,6 +116,49 @@ class SettingTableViewController: UITableViewController, fVmodel {
         super.viewWillAppear(animated)
         
         tableView.reloadData()
+    }
+    
+    
+    @objc func switchAction(_ sender: idxSwitch) {
+        
+        switch sender.menuTypeStr {
+            
+        case .fetch:
+            fetch(sender)
+            
+        case .downSample:
+            downToggle(sender)
+            
+        case .delete:
+            delAllFoodArr(sender)
+        }
+    }
+    
+    func fetch(_ sender: idxSwitch) {
+        print("--> fetchFromServer 연동 = \(sender.isOn)\n")
+        UserDefaults.standard.setValue(sender.isOn, forKey: "fetchServer")
+        
+        if sender.isOn {
+            let ref: DatabaseReference! = Database.database().reference()
+            if let rhtDesc = (tblArr[1]["cells"] as? [[String: Any]] ?? [])[1]["rightDesc"] as? String {
+                let usrEmail = String(describing: rhtDesc.split(separator: "@").first ?? "")
+                
+                ref.child("users/\(usrEmail)").removeValue()
+                
+                for (i, obj) in foodShared.foods.enumerated() {
+                    ref.child("users/\(usrEmail)/\(i)/foodName").setValue(obj.foodName)
+                    ref.child("users/\(usrEmail)/\(i)/ondo").setValue(obj.ondo)
+                    ref.child("users/\(usrEmail)/\(i)/hour").setValue(obj.hour)
+                    ref.child("users/\(usrEmail)/\(i)/min").setValue(obj.min)
+                    ref.child("users/\(usrEmail)/\(i)/turningFood").setValue(obj.turningFood)
+                    ref.child("users/\(usrEmail)/\(i)/foodType").setValue(obj.foodType)
+                    
+                    ref.child("users/\(usrEmail)/\(i)/crType").setValue(obj.crType)
+                    ref.child("users/\(usrEmail)/\(i)/isTimerOn").setValue(obj.isTimerOn)
+                    ref.child("users/\(usrEmail)/\(i)/foodId").setValue(obj.foodId)
+                }
+            }
+        }
     }
     
     // [ㅇ] firebase에서 내려받기
@@ -252,18 +296,17 @@ class SettingTableViewController: UITableViewController, fVmodel {
     
     
     @objc func showCellAlert(sender: UIButton) {
-        let sdid = sender.restorationIdentifier ?? ""
-        
-        print("--> sdid = \(sdid)\n")
+        let sdid = switchMenuStr(rawValue: sender.restorationIdentifier ?? "")
+        print("--> sdid = \(sdid?.rawValue ?? "")\n")
         
         switch sdid {
-        case "샘플받기":
+        case .fetch, .downSample:
             showAlert(msg: "구글 계정 로그인이 필요합니다.")
             
-        case "삭제":
+        case .delete:
             showAlert(msg: "조리시간 탭의 리스트 수가 \n1개이상이어야 합니다.")
-            
-        default:
+ 
+        case .none:
             break
         }
     }
@@ -406,31 +449,29 @@ class SettingTableViewController: UITableViewController, fVmodel {
             
             cell.setView(obj: (title: tit, type: type, isOn: isOn, rightDesc: rgDesc))
             cell.swch.tit = tit
+            cell.swch.addTarget(self, action: #selector(switchAction), for: .touchUpInside)
             
-            if let idx = ["샘플받기", "삭제"].filter ({ (cell.swch.tit).lowercased().contains( $0.lowercased() ) }).first {
+            let menuStr = switchMenuStr(rawValue: cell.swch.tit)
+            
+            switch menuStr {
+            case .fetch:
+                cell.swch.isEnabled = hasCrntUser
+                cell.swch.isOn = fetchServer
                 
-                switch idx {
-                case "샘플받기":
-                    cell.swch.isEnabled = hasCrntUser
-                    cell.swch.addTarget(self, action: #selector(downToggle), for: .touchUpInside)
-
-                    cell.btnSwch.isHidden = cell.swch.isEnabled
-                    cell.btnSwch.restorationIdentifier = idx
-                    cell.btnSwch.addTarget(self, action: #selector(showCellAlert), for: .touchUpInside)
-                    
-                case "삭제":
-                    print("삭제")
-                    cell.swch.isEnabled = foodShared.foods.count > 0
-                    cell.swch.addTarget(self, action: #selector(delAllFoodArr), for: .touchUpInside)
-                    
-                    cell.btnSwch.isHidden = cell.swch.isEnabled
-                    cell.btnSwch.restorationIdentifier = idx
-                    cell.btnSwch.addTarget(self, action: #selector(showCellAlert), for: .touchUpInside)
-                    
-                default:
-                    break
-                }
+            case .downSample:
+                cell.swch.isEnabled = hasCrntUser
+                
+            case .delete:
+                print("삭제")
+                cell.swch.isEnabled = foodShared.foods.count > 0
+                
+            default:
+                break
             }
+            
+            cell.btnSwch.isHidden = cell.swch.isEnabled
+            cell.btnSwch.restorationIdentifier = cell.swch.tit
+            cell.btnSwch.addTarget(self, action: #selector(showCellAlert), for: .touchUpInside)
             
         }
         
@@ -518,6 +559,33 @@ enum stType: Int {
 class idxSwitch: UISwitch {
     var idx: (hide: Int, tag: Int) = (0, 0)
     var tit: String = ""
+    
+    var menuTypeStr: switchMenuStr {
+        return .init(rawValue: tit) ?? .fetch
+    }
+}
+
+enum switchMenuStr: String {
+    case fetch = "서버와 연동"
+    case downSample = "서버에서 샘플받기"
+    case delete = "타이머 전체 삭제"
+    
+    init?(rawValue: String) {
+        switch rawValue {
+        
+        case switchMenuStr.fetch.rawValue:
+            self = switchMenuStr.fetch
+            
+        case switchMenuStr.downSample.rawValue:
+            self = switchMenuStr.downSample
+            
+        case switchMenuStr.delete.rawValue:
+            self = switchMenuStr.delete
+            
+        default:
+            return nil
+        }
+    }
 }
 
 extension UIViewController {
@@ -562,7 +630,17 @@ extension UIViewController {
 
 extension NSObject {
     var hasCrntUser: Bool {
-        return Auth.auth().currentUser != nil
+        let res = Auth.auth().currentUser != nil
+        
+        if res == false {
+            UserDefaults.standard.setValue(false, forKey: "fetchServer")
+        }
+        
+        return res
+    }
+    
+    var fetchServer: Bool {
+        return UserDefaults.standard.value(forKey: "fetchServer") as? Bool ?? false
     }
 }
 
