@@ -143,6 +143,12 @@ class FoodViewModel {
         }
     }
     
+    var sortType: [ (title: SortType, selected: Bool) ] = [(.name, true), (.latest, false)]
+    
+    var selectedType: SortType {
+        return (sortType.filter { $0.selected }).first?.title ?? .name
+    }
+    
     func addFood(_ food: Food) {
         manager.addFood(food)
     }

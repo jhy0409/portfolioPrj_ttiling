@@ -34,13 +34,5 @@ class AFHeaderView: UICollectionReusableView {
             }
         }
         
-        //for (i, sObj) in sortArr[1].enumerated() {
-        //    sg_created.setTitle(sObj.title, forSegmentAt: i)
-        //
-        //    if sObj.selected {
-        //        sg_created.selectedSegmentIndex = i
-        //    }
-        //}
-        
     }
 }

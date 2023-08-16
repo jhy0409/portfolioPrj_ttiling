@@ -17,11 +17,6 @@ class AFTimerViewController: UIViewController, fVmodel {
     var startTime: Date?
     static let userNotiCenter = UNUserNotificationCenter.current()
     
-    var sortType: [ (title: SortType, selected: Bool) ] = [(.name, true), (.latest, false)]
-    
-    var selectedType: SortType {
-        return (sortType.filter { $0.selected }).first?.title ?? .name
-    }
     
     // MARK: ------------------- View Life Cycle -------------------
     override func viewDidLoad() {
@@ -38,7 +33,7 @@ class AFTimerViewController: UIViewController, fVmodel {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         
-        foodShared.loadFoods(sort: selectedType) { [weak self] in
+        foodShared.loadFoods(sort: foodShared.selectedType) { [weak self] in
             self?.collectionView.reloadData()
         }
     }
@@ -77,11 +72,11 @@ class AFTimerViewController: UIViewController, fVmodel {
     @objc func setSortArr(_ sender: UISegmentedControl) {
         print("--> sender selected = \(sender.titleForSegment(at: sender.selectedSegmentIndex) ?? "")\n")
         
-        for i in 0..<sortType.count {
-            sortType[i].selected = i == sender.selectedSegmentIndex
+        for i in 0..<foodShared.sortType.count {
+            foodShared.sortType[i].selected = i == sender.selectedSegmentIndex
         }
         
-        foodShared.loadFoods(sort: selectedType) { [weak self] in
+        foodShared.loadFoods(sort: foodShared.selectedType) { [weak self] in
             self?.collectionView.reloadData()
         }
     }
@@ -104,7 +99,7 @@ extension AFTimerViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         let headerview = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "AFHeaderView", for: indexPath) as! AFHeaderView
         
-        headerview.setView(sortArr: self.sortType)
+        headerview.setView(sortArr: self.foodShared.sortType)
         headerview.sg_svUser.addTarget(self, action: #selector(setSortArr), for: .valueChanged)
         
         return headerview
@@ -182,7 +177,7 @@ extension AFTimerViewController: UNUserNotificationCenterDelegate {
     
     func afterLeaveView() {
         print("--> afterLeaveView / afTimerVC")
-        foodShared.loadFoods(sort: selectedType) { [weak self] in
+        foodShared.loadFoods(sort: foodShared.selectedType) { [weak self] in
             guard let `self` = self else { return }
             
             self.collectionView.reloadData()

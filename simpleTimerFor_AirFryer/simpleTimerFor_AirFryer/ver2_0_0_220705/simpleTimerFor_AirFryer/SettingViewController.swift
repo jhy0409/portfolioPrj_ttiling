@@ -131,11 +131,11 @@ class SettingTableViewController: UITableViewController, fVmodel {
                         print("\n--> [ 함수실행 ] add getData : \n---> [ 타이머 전체 수 ] foodsArr current count : \(self.foodShared.manager.foods.count) ")
                                 self.tableView.reloadData()
                         
-                        // [ㅇ] 다운완료 알림창
-                        // [] 다운 후 객체 정렬
                         self.showAlert("알림","다운로드가 완료되었습니다.", {
                             sender.isEnabled = true // 다운완료 후 동작 - 스위치 끄기
                             sender.isOn = false
+                            
+                            self.foodShared.loadFoods(sort: self.foodShared.selectedType)
                             self.tableView.reloadData()
                         })
                     
@@ -198,17 +198,17 @@ class SettingTableViewController: UITableViewController, fVmodel {
                     /// 생성타입이 서버값과 같지 않을 때 추가함
                     let hasValue: Bool = foodShared.foods.filter { $0.crType == crType }.count > 0
                     
-                    let isLast: Bool = i == (arrs.count - 1)
-                    
                     if !hasValue {
-                        self.foodShared.addFood(food, isLast: isLast, completion: completion?[0])
+                        self.foodShared.addFood(food)
                         print("--> addFood from server = \(food.foodName)\t\(food.crType)\((i+1) % 5 == 0 ? "\n" : "")")
                     }
                 }
                 
-                if prevFoods == self.foodShared.foods {
-                    DispatchQueue.main.async {
+                DispatchQueue.main.async {
+                    if prevFoods == self.foodShared.foods {
                         completion?[1]()
+                    } else {
+                        completion?[0]()
                     }
                 }
                 
