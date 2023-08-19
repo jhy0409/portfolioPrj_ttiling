@@ -10,6 +10,7 @@ import UIKit
 class AFHeaderView: UICollectionReusableView {
 
     @IBOutlet weak var containerView: UIView!
+    @IBOutlet weak var sg_svSave: UISegmentedControl!
     @IBOutlet weak var sg_svUser: UISegmentedControl!
     
     override func awakeFromNib() {
@@ -22,17 +23,23 @@ class AFHeaderView: UICollectionReusableView {
     }
     
     
-    func setView(sortArr: [(title: SortType, selected: Bool)]) {
+    func setView(sortArr: [[SortObj]]) {
         //containerView.backgroundColor = .white.withAlphaComponent(0.5)
         containerView.backgroundColor = .white
         
-        for (i, sObj) in sortArr.enumerated() {
-            sg_svUser.setTitle(sObj.title.rawValue, forSegmentAt: i)
+        for (i, sg) in [sg_svSave, sg_svUser].enumerated() {
+            sg?.tag = i
+            
+            for (i, sObj) in sortArr[i].enumerated() {
+                sg?.setTitle(sObj.title.rawValue, forSegmentAt: i)
 
-            if sObj.selected {
-                sg_svUser.selectedSegmentIndex = i
+                if sObj.selected {
+                    sg?.selectedSegmentIndex = i
+                }
             }
         }
-        
+       
     }
+    
+    
 }

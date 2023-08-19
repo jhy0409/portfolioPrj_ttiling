@@ -6,6 +6,7 @@
 //
 import Foundation
 import UIKit
+import Firebase
 
 struct Food: Codable, Equatable {
     let foodId: Int
@@ -55,7 +56,7 @@ struct Food: Codable, Equatable {
     }
 }
 
-class FoodManager {
+class FoodManager: NSObject {
     static let shared = FoodManager()
     static var lastId: Int = 0
     
@@ -100,16 +101,58 @@ class FoodManager {
         Storage.store(foods, to: .documents, as: "foods.json", completion)
     }
     
-    func retrieveFood(sort: SortType, completion: (()->Void)? = nil) {
-        foods = Storage.retrive("foods.json", from: .documents, as: [Food].self, completion: completion) ?? []
+    func retrieveFood(save: SortType, sort: SortType, completion: (()->Void)? = nil) {
         
-        switch sort {
-        case .name:
-            foods = foods.sorted(by: { $0.foodName.lowercased() < $1.foodName.lowercased() })
-        
-        case .latest:
-            foods = foods.sorted(by: { $0.created > $1.created })
+        if save == .local {
+            foods = Storage.retrive("foods.json", from: .documents, as: [Food].self, completion: completion) ?? []
+            sortFoods(sort: sort, completion: completion)
+
+        } else if save == .server {
+            self.foods.removeAll()
+            guard let usr = usrInfo else { return }
+            let email = usr.email?.split(separator: "@").first ?? ""
+            
+            rfr.child("users/\(email)").getData { [weak self] err, snapshot in
+                guard let `self` = self else { return }
+                
+                //let prevFoods = self.foods
+                
+                if let values = snapshot.value as? NSDictionary, let arrs = values.allValues as? [NSDictionary] {
+                    for (i, value) in arrs.enumerated() {
+                        
+                        //v1_foodId = value?["foodId"] as? Int ?? 0
+                        let crType          = value["crType"] as? String ?? "server"
+                        let foodName        = value["foodName"] as? String ?? "NONE"
+                        let foodType        = value["foodType"] as? String ?? "NONE"
+                        let hour            = value["hour"] as? Int ?? 0
+                        let isTimerOn       = value["isTimerOn"] as? Bool ?? false
+                        let min             = value["min"] as? Int ?? 0
+                        
+                        let ondo            = value["ondo"] as? Int ?? 0
+                        let turningFood     = value["turningFood"] as? Int ?? 0
+                        let created         = self.currentTime()
+                        
+                        let food: Food = self.createFood(ondo: ondo, hour: hour, min: min, turn: turningFood, foodType: foodType, isTimerOn: isTimerOn, foodName: foodName, created: created, crType: crType)
+                        
+                        /// 생성타입이 서버값과 같지 않을 때 추가함
+                        //let hasValue: Bool = foods.filter { $0.crType == crType }.count > 0
+                        
+                        //if !hasValue {
+                        self.addFood(food)
+                        print("--> addFood from server = \(food.foodName)\t\(food.crType)\((i+1) % 5 == 0 ? "\n" : "")")
+                        //}
+                    }
+                    
+                    DispatchQueue.main.async {
+                        self.sortFoods(sort: sort, completion: completion)
+                    }
+                    
+                }
+                
+                
+            }
         }
+     
         
         let lastId = foods.sorted { $0.foodId > $1.foodId }.first?.foodId ?? 0
         
@@ -118,6 +161,21 @@ class FoodManager {
         //print("\n--> lastId = \(lastId)")
         
         FoodManager.lastId = lastId
+    }
+    
+    func sortFoods(sort: SortType, completion: (()->Void)? = nil) {
+        switch sort {
+        case .name:
+            foods = foods.sorted(by: { $0.foodName.lowercased() < $1.foodName.lowercased() })
+            completion?()
+            
+        case .latest:
+            foods = foods.sorted(by: { $0.created > $1.created })
+            completion?()
+            
+        default:
+            break
+        }
     }
     
     func getFoodsArr() -> [Food] {
@@ -130,7 +188,7 @@ class FoodManager {
     }
 }
 
-class FoodViewModel {
+class FoodViewModel: NSObject {
     static let shared = FoodViewModel()
     public let manager = FoodManager.shared
     
@@ -143,10 +201,25 @@ class FoodViewModel {
         }
     }
     
-    var sortType: [ (title: SortType, selected: Bool) ] = [(.name, true), (.latest, false)]
+//var sortType: [[SortObj]] = [ [.init(title: .server, selected: false), .init(title: .local, selected: true) ],
+//                              [.init(title: .name, selected: true), .init(title: .latest, selected: false)] ]
+    
+    var sortType: [[SortObj]] = [ ]
     
     var selectedType: SortType {
-        return (sortType.filter { $0.selected }).first?.title ?? .name
+        //var res = [SortType]()
+        //
+        //sortType.forEach { arr in
+        //    let selectedObj = arr.filter { $0.selected }.first?.title ?? .name
+        //    res.append(selectedObj)
+        //}
+        //
+        //return res
+        return sortType[1].filter { $0.selected }.first?.title ?? .name
+    }
+    
+    var saveSpot: SortType {
+        return sortType[0].filter { $0.selected }.first?.title ?? .local
     }
     
     func addFood(_ food: Food) {
@@ -165,12 +238,17 @@ class FoodViewModel {
         manager.updateFood(food, completion: completion)
     }
     
-    func loadFoods(sort: SortType, completion: (()->Void)? = nil) {
+    func loadFoods(save: SortType, sort: SortType, completion: (()->Void)? = nil) {
         print("\n--> 호출 loadFoods with sort option")
-        manager.retrieveFood(sort: sort, completion: completion)
+        manager.retrieveFood(save: save, sort: sort, completion: completion)
     }
     
     func deleteAllFoods() {
         manager.setFoodsArr(tempArr: [])
     }
+}
+
+struct SortObj: Codable {
+    let title: SortType
+    var selected: Bool
 }

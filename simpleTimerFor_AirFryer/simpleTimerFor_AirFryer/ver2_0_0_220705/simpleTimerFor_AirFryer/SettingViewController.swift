@@ -28,9 +28,6 @@ class SettingTableViewController: UITableViewController, fVmodel {
     /// 버전정보
     @IBOutlet weak var versionDescription: UILabel!
     
-    var user: User? {
-        return Auth.auth().currentUser
-    }
     // MARK: =================== Variables ===================
     var defCells: [[[String: Any]]] {
         return [
@@ -87,7 +84,7 @@ class SettingTableViewController: UITableViewController, fVmodel {
         super.viewDidLoad()
         
         
-        if let usr = user {
+        if let usr = usrInfo {
             let emptyStr: String = "-"
             let userNm: String    = (usr.displayName?.isEmpty ?? true) ? emptyStr : (usr.displayName ?? emptyStr)
             let email: String     = (usr.email?.isEmpty ?? true) ? emptyStr : (usr.email ?? emptyStr)
@@ -139,23 +136,23 @@ class SettingTableViewController: UITableViewController, fVmodel {
         UserDefaults.standard.setValue(sender.isOn, forKey: "fetchServer")
         
         if sender.isOn {
-            let ref: DatabaseReference! = Database.database().reference()
+            
             if let rhtDesc = (tblArr[1]["cells"] as? [[String: Any]] ?? [])[1]["rightDesc"] as? String {
                 let usrEmail = String(describing: rhtDesc.split(separator: "@").first ?? "")
                 
-                ref.child("users/\(usrEmail)").removeValue()
+                rfr.child("users/\(usrEmail)").removeValue()
                 
                 for (_, obj) in foodShared.foods.enumerated() {
-                    ref.child("users/\(usrEmail)/\(obj.crType)/foodName").setValue(obj.foodName)
-                    ref.child("users/\(usrEmail)/\(obj.crType)/ondo").setValue(obj.ondo)
-                    ref.child("users/\(usrEmail)/\(obj.crType)/hour").setValue(obj.hour)
-                    ref.child("users/\(usrEmail)/\(obj.crType)/min").setValue(obj.min)
-                    ref.child("users/\(usrEmail)/\(obj.crType)/turningFood").setValue(obj.turningFood)
-                    ref.child("users/\(usrEmail)/\(obj.crType)/foodType").setValue(obj.foodType)
+                    rfr.child("users/\(usrEmail)/\(obj.crType)/foodName").setValue(obj.foodName)
+                    rfr.child("users/\(usrEmail)/\(obj.crType)/ondo").setValue(obj.ondo)
+                    rfr.child("users/\(usrEmail)/\(obj.crType)/hour").setValue(obj.hour)
+                    rfr.child("users/\(usrEmail)/\(obj.crType)/min").setValue(obj.min)
+                    rfr.child("users/\(usrEmail)/\(obj.crType)/turningFood").setValue(obj.turningFood)
+                    rfr.child("users/\(usrEmail)/\(obj.crType)/foodType").setValue(obj.foodType)
                     
-                    ref.child("users/\(usrEmail)/\(obj.crType)/crType").setValue(obj.crType)
-                    ref.child("users/\(usrEmail)/\(obj.crType)/isTimerOn").setValue(obj.isTimerOn)
-                    ref.child("users/\(usrEmail)/\(obj.crType)/foodId").setValue(obj.foodId)
+                    rfr.child("users/\(usrEmail)/\(obj.crType)/crType").setValue(obj.crType)
+                    rfr.child("users/\(usrEmail)/\(obj.crType)/isTimerOn").setValue(obj.isTimerOn)
+                    rfr.child("users/\(usrEmail)/\(obj.crType)/foodId").setValue(obj.foodId)
                 }
             }
         }
@@ -179,7 +176,7 @@ class SettingTableViewController: UITableViewController, fVmodel {
                             sender.isEnabled = true // 다운완료 후 동작 - 스위치 끄기
                             sender.isOn = false
                             
-                            self.foodShared.loadFoods(sort: self.foodShared.selectedType)
+                            self.foodShared.loadFoods(save: self.foodShared.saveSpot, sort: self.foodShared.selectedType)
                             self.tableView.reloadData()
                         })
                     
@@ -213,11 +210,9 @@ class SettingTableViewController: UITableViewController, fVmodel {
     func getData(completion: [()->Void]? = nil ) {
         //var v1_foodId = 0
         
-        let ref: DatabaseReference! = Database.database().reference()
-
         // [ㅇ] 다운완료 알림창
         // [] 다운 후 객체 정렬
-        ref.child("sample").getData { [weak self] err, snapshot in
+        rfr.child("sample").getData { [weak self] err, snapshot in
             guard let `self` = self else { return }
 
             let prevFoods = self.foodShared.foods
@@ -606,15 +601,6 @@ extension UIViewController {
         present(alertController, animated: true, completion: nil)
     }
     
-    func currentTime() -> String {
-        let now = Date()
-        let dateFormatter = DateFormatter()
-        dateFormatter.locale = .init(identifier: "ko_KR")
-        dateFormatter.dateFormat = "yyMMdd HH:mm:ss"
-        
-        return dateFormatter.string(from: now)
-    }
-    
     public func displayError(_ error: Error?, from function: StaticString = #function) {
       guard let error = error else { return }
       print("ⓧ Error in \(function): \(error.localizedDescription)")
@@ -630,6 +616,18 @@ extension UIViewController {
 }
 
 extension NSObject {
+    var usrDef: UserDefaults {
+        return UserDefaults.standard
+    }
+    
+    var rfr: DatabaseReference {
+      return Database.database().reference()
+    }
+    
+    var usrInfo: User? {
+        return Auth.auth().currentUser
+    }
+    
     var hasCrntUser: Bool {
         let res = Auth.auth().currentUser != nil
         
@@ -642,6 +640,15 @@ extension NSObject {
     
     var fetchServer: Bool {
         return UserDefaults.standard.value(forKey: "fetchServer") as? Bool ?? false
+    }
+    
+    func currentTime() -> String {
+        let now = Date()
+        let dateFormatter = DateFormatter()
+        dateFormatter.locale = .init(identifier: "ko_KR")
+        dateFormatter.dateFormat = "yyMMdd HH:mm:ss"
+        
+        return dateFormatter.string(from: now)
     }
 }
 

@@ -33,7 +33,7 @@ class AFTimerViewController: UIViewController, fVmodel {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         
-        foodShared.loadFoods(sort: foodShared.selectedType) { [weak self] in
+        foodShared.loadFoods(save: foodShared.saveSpot, sort: foodShared.selectedType) { [weak self] in
             self?.collectionView.reloadData()
         }
     }
@@ -72,11 +72,15 @@ class AFTimerViewController: UIViewController, fVmodel {
     @objc func setSortArr(_ sender: UISegmentedControl) {
         print("--> sender selected = \(sender.titleForSegment(at: sender.selectedSegmentIndex) ?? "")\n")
         
-        for i in 0..<foodShared.sortType.count {
-            foodShared.sortType[i].selected = i == sender.selectedSegmentIndex
+        for i in 0..<foodShared.sortType[sender.tag].count {
+            foodShared.sortType[sender.tag][i].selected = i == sender.selectedSegmentIndex
         }
         
-        foodShared.loadFoods(sort: foodShared.selectedType) { [weak self] in
+        if let data = try? JSONEncoder().encode(foodShared.sortType) {
+            usrDef.setValue(data, forKey: "sortType")
+        }
+        
+        foodShared.loadFoods(save: foodShared.saveSpot, sort: foodShared.selectedType) { [weak self] in
             self?.collectionView.reloadData()
         }
     }
@@ -100,6 +104,7 @@ extension AFTimerViewController: UICollectionViewDataSource {
         let headerview = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "AFHeaderView", for: indexPath) as! AFHeaderView
         
         headerview.setView(sortArr: self.foodShared.sortType)
+        headerview.sg_svSave.addTarget(self, action: #selector(setSortArr), for: .valueChanged)
         headerview.sg_svUser.addTarget(self, action: #selector(setSortArr), for: .valueChanged)
         
         return headerview
@@ -177,7 +182,7 @@ extension AFTimerViewController: UNUserNotificationCenterDelegate {
     
     func afterLeaveView() {
         print("--> afterLeaveView / afTimerVC")
-        foodShared.loadFoods(sort: foodShared.selectedType) { [weak self] in
+        foodShared.loadFoods(save: foodShared.saveSpot, sort: foodShared.selectedType) { [weak self] in
             guard let `self` = self else { return }
             
             self.collectionView.reloadData()
@@ -185,7 +190,9 @@ extension AFTimerViewController: UNUserNotificationCenterDelegate {
     }
 }
 
-enum SortType: String {
+enum SortType: String, Codable {
+    case server = "서버"
+    case local  = "로컬"
     case name   = "이름순"
     case latest = "최신순"
 }

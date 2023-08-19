@@ -17,8 +17,27 @@ class AppDelegate: UIResponder, UIApplicationDelegate, fVmodel {
         
         UNUserNotificationCenter.current().delegate = self
         FirebaseApp.configure()
+        let defSortArr: [[SortObj]] = [ [.init(title: .server, selected: false), .init(title: .local, selected: true) ],
+                           [.init(title: .name, selected: true), .init(title: .latest, selected: false)] ]
         
-        foodShared.loadFoods(sort: .name)
+        /// 기존 저장값
+        if let data = usrDef.object(forKey: "sortType") as? Data, let sorts = try? JSONDecoder().decode([[SortObj]].self, from: data) {
+            foodShared.sortType = sorts
+            
+        } else { // 첫실행
+            if let data = try? JSONEncoder().encode(defSortArr) {
+                usrDef.setValue(data, forKey: "sortType")
+                
+                if let savedData = usrDef.object(forKey: "sortType") as? Data,
+                    let sorts = try? JSONDecoder().decode([[SortObj]].self, from: savedData) {
+                    foodShared.sortType = sorts
+                }
+            }
+            
+        }
+        
+
+        foodShared.loadFoods(save: foodShared.saveSpot, sort: foodShared.selectedType)
         return true
     }
 

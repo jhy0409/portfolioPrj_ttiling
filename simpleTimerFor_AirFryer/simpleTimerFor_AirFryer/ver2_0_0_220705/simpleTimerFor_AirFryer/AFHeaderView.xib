@@ -16,22 +16,37 @@
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="PfN-3g-xkL">
                     <rect key="frame" x="0.0" y="0.0" width="320" height="50"/>
                     <subviews>
-                        <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="Vrd-fk-bVb">
-                            <rect key="frame" x="80" y="7.6666666666666679" width="160" height="36"/>
-                            <constraints>
-                                <constraint firstAttribute="height" constant="35" id="pmG-7b-BYY"/>
-                            </constraints>
-                            <segments>
-                                <segment title="서버"/>
-                                <segment title="유저"/>
-                            </segments>
-                        </segmentedControl>
+                        <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="mQR-QJ-3lH">
+                            <rect key="frame" x="15.666666666666657" y="7.6666666666666679" width="289" height="35"/>
+                            <subviews>
+                                <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="MCT-Hx-ztc">
+                                    <rect key="frame" x="0.0" y="0.0" width="139.33333333333334" height="36"/>
+                                    <constraints>
+                                        <constraint firstAttribute="height" constant="35" id="zgo-Uy-KY6"/>
+                                    </constraints>
+                                    <segments>
+                                        <segment title="서버"/>
+                                        <segment title="유저"/>
+                                    </segments>
+                                </segmentedControl>
+                                <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="Vrd-fk-bVb">
+                                    <rect key="frame" x="149.33333333333337" y="0.0" width="139.66666666666663" height="36"/>
+                                    <constraints>
+                                        <constraint firstAttribute="height" constant="35" id="pmG-7b-BYY"/>
+                                    </constraints>
+                                    <segments>
+                                        <segment title="서버"/>
+                                        <segment title="유저"/>
+                                    </segments>
+                                </segmentedControl>
+                            </subviews>
+                        </stackView>
                     </subviews>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <constraints>
-                        <constraint firstItem="Vrd-fk-bVb" firstAttribute="width" secondItem="PfN-3g-xkL" secondAttribute="width" multiplier="0.5" id="dhE-iZ-jkY"/>
-                        <constraint firstItem="Vrd-fk-bVb" firstAttribute="centerX" secondItem="PfN-3g-xkL" secondAttribute="centerX" id="gCg-0a-tYl"/>
-                        <constraint firstItem="Vrd-fk-bVb" firstAttribute="centerY" secondItem="PfN-3g-xkL" secondAttribute="centerY" id="wqO-Jj-arh"/>
+                        <constraint firstItem="mQR-QJ-3lH" firstAttribute="width" secondItem="PfN-3g-xkL" secondAttribute="width" multiplier="0.9" constant="1" id="Dh5-5X-UKb"/>
+                        <constraint firstItem="mQR-QJ-3lH" firstAttribute="centerY" secondItem="PfN-3g-xkL" secondAttribute="centerY" id="LEf-t6-Zu3"/>
+                        <constraint firstItem="mQR-QJ-3lH" firstAttribute="centerX" secondItem="PfN-3g-xkL" secondAttribute="centerX" id="xhR-fo-7OC"/>
                     </constraints>
                 </view>
             </subviews>
@@ -43,6 +58,7 @@
             </constraints>
             <connections>
                 <outlet property="containerView" destination="PfN-3g-xkL" id="R4J-cM-UeO"/>
+                <outlet property="sg_svSave" destination="MCT-Hx-ztc" id="q41-Co-p8G"/>
                 <outlet property="sg_svUser" destination="Vrd-fk-bVb" id="nZs-I5-D2t"/>
             </connections>
             <point key="canvasLocation" x="37" y="-12"/>
