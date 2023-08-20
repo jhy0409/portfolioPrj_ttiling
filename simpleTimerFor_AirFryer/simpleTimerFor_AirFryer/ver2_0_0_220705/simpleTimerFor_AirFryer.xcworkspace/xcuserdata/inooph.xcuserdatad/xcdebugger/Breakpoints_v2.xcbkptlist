@@ -18,6 +18,38 @@
             endingLineNumber = "280"
             landmarkName = "collectionView(_:layout:sizeForItemAt:)"
             landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "2A9A4E68-19D8-45B1-B173-1C8F1E8211FD - 241c996c7842b146"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "ttiling.AddTimerViewController.collectionView(_: __C.UICollectionView, layout: __C.UICollectionViewLayout, sizeForItemAt: Foundation.IndexPath) -&gt; __C.CGSize"
+                  moduleName = "ttiling"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/inooph/Documents/GitHub/portfolioPrj_ttiling/simpleTimerFor_AirFryer/simpleTimerFor_AirFryer/ver2_0_0_220705/simpleTimerFor_AirFryer/Timer/Add/AddTimerViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "280"
+                  endingLineNumber = "280"
+                  offsetFromSymbolStart = "180">
+               </Location>
+               <Location
+                  uuid = "2A9A4E68-19D8-45B1-B173-1C8F1E8211FD - 241c996c7842b127"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "ttiling.AddTimerViewController.collectionView(_: __C.UICollectionView, layout: __C.UICollectionViewLayout, sizeForItemAt: Foundation.IndexPath) -&gt; __C.CGSize"
+                  moduleName = "ttiling"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/inooph/Documents/GitHub/portfolioPrj_ttiling/simpleTimerFor_AirFryer/simpleTimerFor_AirFryer/ver2_0_0_220705/simpleTimerFor_AirFryer/Timer/Add/AddTimerViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "281"
+                  endingLineNumber = "281"
+                  offsetFromSymbolStart = "180">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>
