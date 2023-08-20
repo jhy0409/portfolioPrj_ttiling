@@ -150,7 +150,7 @@ class FoodManager: NSObject {
             saveToServer(isFetch: fetchServer)
             
         } else if save == .server {
-            saveToServer()
+            saveToServer(completion: completion)
         }
     }
     
@@ -185,7 +185,7 @@ class FoodManager: NSObject {
     }
     
     /// 기존 서버 연동
-    func saveToServer() {
+    func saveToServer(completion: (()->Void)? = nil) {
         rfr.child("users/\(usrEmail)").removeValue()
         
         for (_, obj) in serverFoods.enumerated() {
@@ -201,6 +201,8 @@ class FoodManager: NSObject {
             rfr.child("users/\(usrEmail)/\(obj.key)/isTimerOn").setValue(obj.isTimerOn)
             rfr.child("users/\(usrEmail)/\(obj.key)/foodId").setValue(obj.foodId)
         }
+        
+        completion?()
     }
     
     func retrieveFood(sort: SortType, completion: (()->Void)? = nil) {

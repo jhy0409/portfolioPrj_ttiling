@@ -12,6 +12,8 @@ class AddTimerViewController: UIViewController, UITextFieldDelegate, fVmodel {
     
     // MARK: ------------------- IBOutlets -------------------
     @IBOutlet weak var containerView: UIScrollView!
+    @IBOutlet weak var innerCtStackView: UIStackView!
+    @IBOutlet weak var innerCtStvWIdth: NSLayoutConstraint!
     
     @IBOutlet weak var foodNameTxt: UITextField!
     @IBOutlet weak var ondoTxt: UITextField!
@@ -122,12 +124,16 @@ class AddTimerViewController: UIViewController, UITextFieldDelegate, fVmodel {
         super.viewDidLoad()
         uiTxtFields = [foodNameTxt, ondoTxt, hourTxt, minTxt, turnTimeTxt ]
         
-        cvFoodType.reloadData()
+        view.setNeedsLayout()
+        view.layoutIfNeeded()
         
         let tapG: UITapGestureRecognizer = .init(target: self, action: #selector(endEdit))
         containerView.addGestureRecognizer(tapG)
         
-       
+        innerCtStvWIdth.constant = view.frame.width - 40
+        cvFoodType.setNeedsLayout()
+        cvFoodType.layoutIfNeeded()
+        cvFoodType.reloadData()
     }
     
     override func viewWillAppear(_ animated: Bool) {

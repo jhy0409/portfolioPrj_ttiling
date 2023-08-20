@@ -328,7 +328,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" directionalLockEnabled="YES" showsHorizontalScrollIndicator="NO" bouncesZoom="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WUx-PO-BIM">
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" directionalLockEnabled="YES" bounces="NO" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" bouncesZoom="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WUx-PO-BIM">
                                 <rect key="frame" x="0.0" y="68" width="414" height="635"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="200" verticalCompressionResistancePriority="200" axis="vertical" spacing="21" translatesAutoresizingMaskIntoConstraints="NO" id="LFL-N1-Tqj">
@@ -547,15 +547,17 @@
                                                 </constraints>
                                             </stackView>
                                         </subviews>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="375" id="31m-Vs-KMv"/>
+                                        </constraints>
                                     </stackView>
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
-                                    <constraint firstAttribute="trailing" secondItem="LFL-N1-Tqj" secondAttribute="trailing" constant="20" id="3AY-6X-z1q"/>
                                     <constraint firstAttribute="bottom" secondItem="LFL-N1-Tqj" secondAttribute="bottom" constant="20" id="Jii-EG-l0q"/>
-                                    <constraint firstItem="LFL-N1-Tqj" firstAttribute="leading" secondItem="WUx-PO-BIM" secondAttribute="leading" constant="20" id="ZyR-QM-zOP"/>
+                                    <constraint firstItem="LFL-N1-Tqj" firstAttribute="leading" secondItem="WUx-PO-BIM" secondAttribute="leading" constant="20" id="YAX-wl-Zll"/>
+                                    <constraint firstAttribute="trailing" secondItem="LFL-N1-Tqj" secondAttribute="trailing" constant="20" id="esc-QH-obj"/>
                                     <constraint firstItem="LFL-N1-Tqj" firstAttribute="top" secondItem="WUx-PO-BIM" secondAttribute="top" constant="20" id="f6P-59-3qR"/>
-                                    <constraint firstItem="LFL-N1-Tqj" firstAttribute="width" secondItem="WUx-PO-BIM" secondAttribute="width" multiplier="0.905797" id="vIo-Ra-4uY"/>
                                 </constraints>
                             </scrollView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tV2-9s-MFE">
@@ -585,12 +587,12 @@
                         <gestureRecognizers/>
                         <constraints>
                             <constraint firstItem="WUx-PO-BIM" firstAttribute="top" secondItem="mIe-TL-5Jn" secondAttribute="top" constant="20" id="4BZ-vE-5WF"/>
-                            <constraint firstItem="WUx-PO-BIM" firstAttribute="trailing" secondItem="mIe-TL-5Jn" secondAttribute="trailing" id="7a0-O2-u8g"/>
                             <constraint firstItem="tV2-9s-MFE" firstAttribute="top" secondItem="WUx-PO-BIM" secondAttribute="bottom" constant="20" id="8qj-sp-8qd"/>
                             <constraint firstItem="mIe-TL-5Jn" firstAttribute="trailing" secondItem="tV2-9s-MFE" secondAttribute="trailing" constant="16" id="HKA-uG-mZg"/>
                             <constraint firstItem="tV2-9s-MFE" firstAttribute="leading" secondItem="mIe-TL-5Jn" secondAttribute="leading" constant="16" id="I38-2u-c1i"/>
                             <constraint firstItem="mIe-TL-5Jn" firstAttribute="bottom" secondItem="tV2-9s-MFE" secondAttribute="bottom" constant="40" id="bc1-yH-ZAY"/>
-                            <constraint firstItem="mIe-TL-5Jn" firstAttribute="leading" secondItem="WUx-PO-BIM" secondAttribute="leading" id="ts2-kw-SWu"/>
+                            <constraint firstItem="mIe-TL-5Jn" firstAttribute="trailing" secondItem="WUx-PO-BIM" secondAttribute="trailing" id="fWw-RZ-uEW"/>
+                            <constraint firstItem="WUx-PO-BIM" firstAttribute="leading" secondItem="mIe-TL-5Jn" secondAttribute="leading" id="yDX-3p-Dfz"/>
                         </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" title="타이머추가" image="plus" catalog="system" id="tKj-js-Eba"/>
@@ -600,6 +602,8 @@
                         <outlet property="cvFoodType" destination="uwS-Wt-S54" id="qLh-Df-7wk"/>
                         <outlet property="foodNameTxt" destination="PnH-I4-ZN1" id="0kt-NJ-dWt"/>
                         <outlet property="hourTxt" destination="kkP-K8-lcH" id="zP8-72-ved"/>
+                        <outlet property="innerCtStackView" destination="LFL-N1-Tqj" id="2Be-wc-Zd8"/>
+                        <outlet property="innerCtStvWIdth" destination="31m-Vs-KMv" id="rnJ-uf-QDF"/>
                         <outlet property="minTxt" destination="UxK-6X-K2j" id="cem-0u-EJ4"/>
                         <outlet property="ondoTxt" destination="zzS-cx-X0q" id="0Xj-sy-qIj"/>
                         <outlet property="turnTimeTxt" destination="4Qu-mh-z2b" id="bGA-pA-ruP"/>
