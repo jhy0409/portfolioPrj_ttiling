@@ -180,7 +180,7 @@ class AddTimerViewController: UIViewController, UITextFieldDelegate, fVmodel {
                 for i in foodShared.foods {
                     if i.foodId == edObj.foodId { // 기존 수정
                         print("\n\nupdate food Func ----> curr id \(i.foodId)")
-                        let food: Food = .init(foodId: edObj.foodId, ondo: Int(ondo)!, hour: Int(hour)!, min: Int(min)!, turn: Int(turn)!, foodType: foodType, isTimerOn: false, foodName: foodName, created: created, crType: i.crType)
+                        let food: Food = .init(foodId: i.foodId, ondo: Int(ondo)!, hour: Int(hour)!, min: Int(min)!, turn: Int(turn)!, foodType: foodType, isTimerOn: false, foodName: foodName, created: i.created, crType: i.crType)
 
                         foodShared.updateFood(food) { [weak self] in
                             guard let `self` = self else { return }

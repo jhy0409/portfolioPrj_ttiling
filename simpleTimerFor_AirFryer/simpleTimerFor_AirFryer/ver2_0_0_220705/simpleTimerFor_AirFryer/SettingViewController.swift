@@ -137,22 +137,31 @@ class SettingTableViewController: UITableViewController, fVmodel {
         
         if sender.isOn {
             
-            if let rhtDesc = (tblArr[1]["cells"] as? [[String: Any]] ?? [])[1]["rightDesc"] as? String {
-                let usrEmail = String(describing: rhtDesc.split(separator: "@").first ?? "")
+            if (tblArr[1]["cells"] as? [[String: Any]] ?? [])[1]["rightDesc"] is String {
+                //rfr.child("users/\(usrEmail)").removeValue()
                 
-                rfr.child("users/\(usrEmail)").removeValue()
+                var uniqueFoods = [Food]()
                 
-                for (_, obj) in foodShared.foods.enumerated() {
-                    rfr.child("users/\(usrEmail)/\(obj.crType)/foodName").setValue(obj.foodName)
-                    rfr.child("users/\(usrEmail)/\(obj.crType)/ondo").setValue(obj.ondo)
-                    rfr.child("users/\(usrEmail)/\(obj.crType)/hour").setValue(obj.hour)
-                    rfr.child("users/\(usrEmail)/\(obj.crType)/min").setValue(obj.min)
-                    rfr.child("users/\(usrEmail)/\(obj.crType)/turningFood").setValue(obj.turningFood)
-                    rfr.child("users/\(usrEmail)/\(obj.crType)/foodType").setValue(obj.foodType)
+                foodShared.manager.localFoods.forEach { lcFd in
+                    let hasValue: Bool = foodShared.manager.serverFoods.filter { $0.key == lcFd.key }.count > 0
                     
-                    rfr.child("users/\(usrEmail)/\(obj.crType)/crType").setValue(obj.crType)
-                    rfr.child("users/\(usrEmail)/\(obj.crType)/isTimerOn").setValue(obj.isTimerOn)
-                    rfr.child("users/\(usrEmail)/\(obj.crType)/foodId").setValue(obj.foodId)
+                    if !hasValue {
+                        uniqueFoods.append(lcFd)
+                    }
+                }
+                
+                for (_, obj) in uniqueFoods.enumerated() {
+                    rfr.child("users/\(usrEmail)/\(obj.key)/foodName").setValue(obj.foodName)
+                    rfr.child("users/\(usrEmail)/\(obj.key)/ondo").setValue(obj.ondo)
+                    rfr.child("users/\(usrEmail)/\(obj.key)/hour").setValue(obj.hour)
+                    rfr.child("users/\(usrEmail)/\(obj.key)/min").setValue(obj.min)
+                    rfr.child("users/\(usrEmail)/\(obj.key)/turningFood").setValue(obj.turningFood)
+                    rfr.child("users/\(usrEmail)/\(obj.key)/foodType").setValue(obj.foodType)
+                    
+                    rfr.child("users/\(usrEmail)/\(obj.key)/crType").setValue(obj.crType)
+                    rfr.child("users/\(usrEmail)/\(obj.key)/isTimerOn").setValue(obj.isTimerOn)
+                    rfr.child("users/\(usrEmail)/\(obj.key)/foodId").setValue(obj.foodId)
+                    rfr.child("users/\(usrEmail)/\(obj.key)/created").setValue(obj.created)
                 }
             }
         }
@@ -169,7 +178,7 @@ class SettingTableViewController: UITableViewController, fVmodel {
                 { [weak self] in
                     guard let `self` else { return }
                     
-                        print("\n--> [ 함수실행 ] add getData : \n---> [ 타이머 전체 수 ] foodsArr current count : \(self.foodShared.manager.foods.count) ")
+                        print("\n--> [ 함수실행 ] add getData : \n---> [ 타이머 전체 수 ] foodsArr current count : \(self.foodShared.foods.count) ")
                                 self.tableView.reloadData()
                         
                         self.showAlert("알림","다운로드가 완료되었습니다.", {
@@ -230,7 +239,7 @@ class SettingTableViewController: UITableViewController, fVmodel {
                     
                     let ondo            = value["ondo"] as? Int ?? 0
                     let turningFood     = value["turningFood"] as? Int ?? 0
-                    let created         = self.currentTime()
+                    let created         = value["created"] as? String ?? ""
                     
                     let food: Food = self.foodShared.manager.createFood(ondo: ondo, hour: hour, min: min, turn: turningFood, foodType: foodType, isTimerOn: isTimerOn, foodName: foodName, created: created, crType: crType)
                     
@@ -626,6 +635,10 @@ extension NSObject {
     
     var usrInfo: User? {
         return Auth.auth().currentUser
+    }
+    
+    var usrEmail: String {
+        return String(usrInfo?.email?.split(separator: "@").first ?? "")
     }
     
     var hasCrntUser: Bool {

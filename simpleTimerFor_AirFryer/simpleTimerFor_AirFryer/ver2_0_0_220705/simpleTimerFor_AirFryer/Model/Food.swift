@@ -26,6 +26,10 @@ struct Food: Codable, Equatable {
     /// 2. 서버에서 다운 : server
     var crType: String
     
+    var key: String {
+        return String(describing: "\(crType)_\(created)") 
+    }
+    
     static func == (lhs: Self, rhs: Self) -> Bool {
         // [] 동등조건 추가 -> 추후 구현
         return lhs.foodId == rhs.foodId
@@ -60,7 +64,12 @@ class FoodManager: NSObject {
     static let shared = FoodManager()
     static var lastId: Int = 0
     
-    var foods: [Food] = []
+    
+    var localFoods: [Food] = []
+    
+    var serverFoods: [Food] = []
+    
+    var saveSpot: SortType = .local 
     
     func createFood(ondo: Int, hour: Int, min: Int, turn: Int, foodType: String, isTimerOn: Bool, foodName: String, created: String, crType: String) -> Food {
         let nextId = FoodManager.lastId + 1
@@ -70,49 +79,120 @@ class FoodManager: NSObject {
     }
     
     func addFood(_ food: Food) {
-        foods.append(food)
-         saveFood()
+
+        if saveSpot == .local {
+            localFoods.append(food)
+            
+        } else if saveSpot == .server {
+            serverFoods.append(food)
+        }
+        
+        saveFood(save: saveSpot)
     }
     
     func addFood(_ food: Food, isLast: Bool, completion: (()->Void)? = nil) {
-        foods.append(food)
+        
+        if saveSpot == .local {
+            localFoods.append(food)
+            
+        } else if saveSpot == .server {
+            serverFoods.append(food)
+        }
+
         if isLast {
-            saveFood(completion)
+            saveFood(save: saveSpot, completion)
         }
     }
     
     func deleteFood(_ food: Food) {
-        foods = foods.filter{ $0.foodId != food.foodId }
-         saveFood()
+        
+        if saveSpot == .local {
+            localFoods = localFoods.filter{ $0.foodId != food.foodId }
+            
+        } else if saveSpot == .server {
+            serverFoods = serverFoods.filter{ $0.foodId != food.foodId }
+        }
+        
+        saveFood(save: saveSpot)
     }
     
     func updateFood(_ food: Food, completion: (()->Void)? = nil) {
-        guard let index = foods.firstIndex(of: food) else { return }
-        print("\n [func updateFood] currunt index is ---->\(index)")
-        foods[index].update(ondo: food.ondo, hour: food.hour, min: food.min, turn: food.turningFood, foodType: food.foodType, isTimerOn: food.isTimerOn, foodName: food.foodName, created: food.created)
-         saveFood(completion)
-    }
-    
-    func saveFood() {
-        Storage.store(foods, to: .documents, as: "foods.json")
-    }
-    
-    func saveFood(_ completion: (()->Void)? = nil) {
-        Storage.store(foods, to: .documents, as: "foods.json", completion)
-    }
-    
-    func retrieveFood(save: SortType, sort: SortType, completion: (()->Void)? = nil) {
         
-        if save == .local {
-            foods = Storage.retrive("foods.json", from: .documents, as: [Food].self, completion: completion) ?? []
-            sortFoods(sort: sort, completion: completion)
-
-        } else if save == .server {
-            self.foods.removeAll()
-            guard let usr = usrInfo else { return }
-            let email = usr.email?.split(separator: "@").first ?? ""
+        if saveSpot == .local {
+            guard let index = localFoods.firstIndex(of: food) else { return }
+            print("\n [func updateFood - local] currunt index is ---->\(index)")
             
-            rfr.child("users/\(email)").getData { [weak self] err, snapshot in
+            localFoods[index].update(ondo: food.ondo, hour: food.hour, min: food.min, turn: food.turningFood, foodType: food.foodType, isTimerOn: food.isTimerOn, foodName: food.foodName, created: food.created)
+            
+        } else if saveSpot == .server {
+            guard let index = serverFoods.firstIndex(of: food) else { return }
+            print("\n [func updateFood - server] currunt index is ---->\(index)")
+            
+            serverFoods[index].update(ondo: food.ondo, hour: food.hour, min: food.min, turn: food.turningFood, foodType: food.foodType, isTimerOn: food.isTimerOn, foodName: food.foodName, created: food.created)
+        }
+        saveFood(save: saveSpot, completion)
+    }
+    
+    func  saveFood(save: SortType) {
+        if save == .local {
+            Storage.store(localFoods, to: .documents, as: "foods.json")
+            
+        } else if save == .server {
+            rfr.child("users/\(usrEmail)").removeValue()
+            
+            for (_, obj) in serverFoods.enumerated() {
+                rfr.child("users/\(usrEmail)/\(obj.key)/foodName").setValue(obj.foodName)
+                rfr.child("users/\(usrEmail)/\(obj.key)/ondo").setValue(obj.ondo)
+                rfr.child("users/\(usrEmail)/\(obj.key)/hour").setValue(obj.hour)
+                rfr.child("users/\(usrEmail)/\(obj.key)/min").setValue(obj.min)
+                rfr.child("users/\(usrEmail)/\(obj.key)/turningFood").setValue(obj.turningFood)
+                rfr.child("users/\(usrEmail)/\(obj.key)/foodType").setValue(obj.foodType)
+                
+                rfr.child("users/\(usrEmail)/\(obj.key)/crType").setValue(obj.crType)
+                rfr.child("users/\(usrEmail)/\(obj.key)/created").setValue(obj.created)
+                rfr.child("users/\(usrEmail)/\(obj.key)/isTimerOn").setValue(obj.isTimerOn)
+                rfr.child("users/\(usrEmail)/\(obj.key)/foodId").setValue(obj.foodId)
+            }
+        }
+    }
+    
+    func saveFood(save: SortType, _ completion: (()->Void)? = nil) {
+        if save == .local {
+            Storage.store(localFoods, to: .documents, as: "foods.json", completion)
+            
+        } else if save == .server {
+            rfr.child("users/\(usrEmail)").removeValue()
+            
+            for (_, obj) in serverFoods.enumerated() {
+                rfr.child("users/\(usrEmail)/\(obj.key)/foodName").setValue(obj.foodName)
+                rfr.child("users/\(usrEmail)/\(obj.key)/ondo").setValue(obj.ondo)
+                rfr.child("users/\(usrEmail)/\(obj.key)/hour").setValue(obj.hour)
+                rfr.child("users/\(usrEmail)/\(obj.key)/min").setValue(obj.min)
+                rfr.child("users/\(usrEmail)/\(obj.key)/turningFood").setValue(obj.turningFood)
+                rfr.child("users/\(usrEmail)/\(obj.key)/foodType").setValue(obj.foodType)
+                
+                rfr.child("users/\(usrEmail)/\(obj.key)/crType").setValue(obj.crType)
+                rfr.child("users/\(usrEmail)/\(obj.key)/created").setValue(obj.created)
+                rfr.child("users/\(usrEmail)/\(obj.key)/isTimerOn").setValue(obj.isTimerOn)
+                rfr.child("users/\(usrEmail)/\(obj.key)/foodId").setValue(obj.foodId)
+            }
+        }
+    }
+    
+    func retrieveFood(sort: SortType, completion: (()->Void)? = nil) {
+        var lastId: Int = 0
+        
+        if saveSpot == .local {
+            localFoods = Storage.retrive("foods.json", from: .documents, as: [Food].self, completion: completion) ?? []
+            sortFoods(sort: sort, completion: completion)
+            
+            lastId = localFoods.sorted { $0.foodId > $1.foodId }.first?.foodId ?? 0
+            
+        } else if saveSpot == .server {
+            self.serverFoods.removeAll()
+            guard usrInfo != nil else { return }
+            
+            rfr.child("users/\(usrEmail)").getData { [weak self] err, snapshot in
                 guard let `self` = self else { return }
                 
                 //let prevFoods = self.foods
@@ -130,7 +210,7 @@ class FoodManager: NSObject {
                         
                         let ondo            = value["ondo"] as? Int ?? 0
                         let turningFood     = value["turningFood"] as? Int ?? 0
-                        let created         = self.currentTime()
+                        let created         = value["created"] as? String ?? ""
                         
                         let food: Food = self.createFood(ondo: ondo, hour: hour, min: min, turn: turningFood, foodType: foodType, isTimerOn: isTimerOn, foodName: foodName, created: created, crType: crType)
                         
@@ -145,16 +225,18 @@ class FoodManager: NSObject {
                     
                     DispatchQueue.main.async {
                         self.sortFoods(sort: sort, completion: completion)
+                        lastId = self.serverFoods.sorted { $0.foodId > $1.foodId }.first?.foodId ?? 0
                     }
                     
+                } else {
+                    DispatchQueue.main.async {
+                        self.sortFoods(sort: sort, completion: completion)
+                        lastId = self.serverFoods.sorted { $0.foodId > $1.foodId }.first?.foodId ?? 0
+                    }
                 }
-                
-                
             }
+            
         }
-     
-        
-        let lastId = foods.sorted { $0.foodId > $1.foodId }.first?.foodId ?? 0
         
         //let tmp = foods.sorted { $0.foodId > $1.foodId }
         //tmp.forEach { print("--> food id\($0.foodId)") }
@@ -166,11 +248,23 @@ class FoodManager: NSObject {
     func sortFoods(sort: SortType, completion: (()->Void)? = nil) {
         switch sort {
         case .name:
-            foods = foods.sorted(by: { $0.foodName.lowercased() < $1.foodName.lowercased() })
+            if saveSpot == .local {
+                localFoods = localFoods.sorted(by: { $0.foodName.lowercased() < $1.foodName.lowercased() })
+
+            } else if saveSpot == .server {
+                serverFoods = serverFoods.sorted(by: { $0.foodName.lowercased() < $1.foodName.lowercased() })
+            }
+            
             completion?()
             
         case .latest:
-            foods = foods.sorted(by: { $0.created > $1.created })
+            if saveSpot == .local {
+                localFoods = localFoods.sorted(by: { $0.created > $1.created })
+
+            } else if saveSpot == .server {
+                serverFoods = serverFoods.sorted(by: { $0.created > $1.created })
+            }
+            
             completion?()
             
         default:
@@ -178,13 +272,15 @@ class FoodManager: NSObject {
         }
     }
     
-    func getFoodsArr() -> [Food] {
-        return foods
-    }
-    
     func setFoodsArr(tempArr: [Food]) -> Void {
-        self.foods = tempArr
-        saveFood()
+        if saveSpot == .local {
+            localFoods = tempArr
+            
+        } else if saveSpot == .server {
+            serverFoods = tempArr
+        }
+        
+        saveFood(save: saveSpot)
     }
 }
 
@@ -194,32 +290,40 @@ class FoodViewModel: NSObject {
     
     var foods: [Food] {
         get {
-            return manager.foods
+            if saveSpot == .local {
+                return manager.localFoods
+                
+            } else if saveSpot == .server {
+                return manager.serverFoods
+                
+            } else {
+                return []
+            }
         }
+        
         set {
-            manager.foods = newValue
+            if saveSpot == .local {
+                manager.localFoods = newValue
+                
+            } else if saveSpot == .server {
+                manager.serverFoods = newValue
+            }
         }
     }
     
-//var sortType: [[SortObj]] = [ [.init(title: .server, selected: false), .init(title: .local, selected: true) ],
-//                              [.init(title: .name, selected: true), .init(title: .latest, selected: false)] ]
     
     var sortType: [[SortObj]] = [ ]
     
     var selectedType: SortType {
-        //var res = [SortType]()
-        //
-        //sortType.forEach { arr in
-        //    let selectedObj = arr.filter { $0.selected }.first?.title ?? .name
-        //    res.append(selectedObj)
-        //}
-        //
-        //return res
         return sortType[1].filter { $0.selected }.first?.title ?? .name
     }
     
     var saveSpot: SortType {
-        return sortType[0].filter { $0.selected }.first?.title ?? .local
+        let saveSpot = sortType[0].filter { $0.selected }.first?.title ?? .local
+        
+        manager.saveSpot = saveSpot
+        
+        return saveSpot
     }
     
     func addFood(_ food: Food) {
@@ -240,7 +344,7 @@ class FoodViewModel: NSObject {
     
     func loadFoods(save: SortType, sort: SortType, completion: (()->Void)? = nil) {
         print("\n--> 호출 loadFoods with sort option")
-        manager.retrieveFood(save: save, sort: sort, completion: completion)
+        manager.retrieveFood(sort: sort, completion: completion)
     }
     
     func deleteAllFoods() {
