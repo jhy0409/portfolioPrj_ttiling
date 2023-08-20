@@ -46,7 +46,9 @@ class AFTimerCell: UICollectionViewCell {
         ondoLabel.text      = "\(food.ondo)℃" // 온도
         
         let h = String(food.hour), m = String(food.min)
-        timerLabel.text         = "\(food.hour > 0 ? "\(h)시간" : "") \(food.min > 0 ? "\(m)분" : "")" // 시간
+        
+        let hStr: String    = food.hour > 0 ? "\(h)시간" : ""
+        timerLabel.text     = "\(hStr.isEmpty ? "" : "\(hStr) ")\(food.min > 0 ? "\(m)분" : "")" // 시간
         //timerStartLabel.text    = "\(food.hour > 0 ? "\(h) : " : "")\(m)분"
         
         timerStartLabel.text    = timerLabel.text
