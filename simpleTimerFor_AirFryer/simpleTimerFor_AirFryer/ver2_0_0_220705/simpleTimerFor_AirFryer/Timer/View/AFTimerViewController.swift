@@ -29,7 +29,7 @@ class AFTimerViewController: UIViewController, fVmodel {
             
         } else if foodShared.saveSpot == .server {
             if foodShared.foods.isEmpty {
-                res = "서버에 저장된 값이 없습니다."
+                res = hasCrntUser ? "서버에 저장된 값이 없습니다." : "서버에 저장된 데이터를 가져오기 위해 인증이 필요합니다."
             } else {
                 res = ""
             }
