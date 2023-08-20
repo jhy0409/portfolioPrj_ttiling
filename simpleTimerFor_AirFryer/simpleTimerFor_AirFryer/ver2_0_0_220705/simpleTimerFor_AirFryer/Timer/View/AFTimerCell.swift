@@ -23,14 +23,6 @@ class AFTimerCell: UICollectionViewCell {
     @IBOutlet weak var lblFrom: UILabel!
     @IBOutlet weak var lblCreated: UILabel!
     
-    private let uiLabelCGColArr = [CGColor(red: 1, green: 0, blue: 0, alpha: 0.2),
-                                   CGColor(red: 0.9254902005, green: 0.2352941185, blue: 0.1019607857, alpha: 0.2),
-                                   CGColor(red: 0.9686274529, green: 0.78039217, blue: 0.3450980484, alpha: 0.2),
-                                   CGColor(red: 0.3411764801, green: 0.6235294342, blue: 0.1686274558, alpha: 0.2),
-                                   CGColor(red: 0.2392156869, green: 0.6745098233, blue: 0.9686274529, alpha: 0.2),
-                                   CGColor(red: 0.2196078449, green: 0.2030190556, blue: 0.8549019694, alpha: 0.2),
-                                   CGColor(red: 0.5, green: 0.007843137719, blue: 0.4200693323, alpha: 0.2)]
-    
     var timerTapHandler: (()-> Void)?
     var closeBtnHandler: (()-> Void)?
     var startTime: Date?
@@ -63,8 +55,7 @@ class AFTimerCell: UICollectionViewCell {
         
         // [ㅇ] 라벨별 색 변경
         foodTypeBtn.setTitle(food.foodType, for: .normal) // 음식 분류, 채소, 고기 등
-        let col = findLabelBgColor(food.foodType)
-        foodTypeBtn.layer.backgroundColor = col
+        foodTypeBtn.layer.backgroundColor = food.fCol
         foodTypeBtn.layer.cornerRadius = 5
         
         // [ㅇ] 타이머 켜기끄기
@@ -171,24 +162,6 @@ extension AFTimerCell {
         ).cgPath
     }
     
-    func findLabelBgColor(_ str: String) -> CGColor { // 각 Cell별 음식분류에 따른 버튼 배경색 지정
-        switch str {
-        case "고기" :
-            return uiLabelCGColArr[0]
-        case "과자" :
-            return uiLabelCGColArr[1]
-        case "냉동식품" :
-            return uiLabelCGColArr[2]
-        case "빵" :
-            return uiLabelCGColArr[3]
-        case "야채" :
-            return uiLabelCGColArr[4]
-        case "해산물" :
-            return uiLabelCGColArr[5]
-        case "기타" :
-            return uiLabelCGColArr[6]
-        default:
-            return uiLabelCGColArr[6]
-        }
-    }
+   
+    
 }

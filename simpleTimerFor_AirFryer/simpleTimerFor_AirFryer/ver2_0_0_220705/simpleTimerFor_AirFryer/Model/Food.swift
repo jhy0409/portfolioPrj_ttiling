@@ -30,6 +30,35 @@ struct Food: Codable, Equatable {
         return String(describing: "\(crType)_\(created)") 
     }
     
+    var fCol: CGColor {
+        let uiLabelCGColArr = [CGColor(red: 1, green: 0, blue: 0, alpha: 0.2),
+                               CGColor(red: 0.9254902005, green: 0.2352941185, blue: 0.1019607857, alpha: 0.2),
+                               CGColor(red: 0.9686274529, green: 0.78039217, blue: 0.3450980484, alpha: 0.2),
+                               CGColor(red: 0.3411764801, green: 0.6235294342, blue: 0.1686274558, alpha: 0.2),
+                               CGColor(red: 0.2392156869, green: 0.6745098233, blue: 0.9686274529, alpha: 0.2),
+                               CGColor(red: 0.2196078449, green: 0.2030190556, blue: 0.8549019694, alpha: 0.2),
+                               CGColor(red: 0.5, green: 0.007843137719, blue: 0.4200693323, alpha: 0.2)]
+        
+        switch foodType {
+        case "고기" :
+            return uiLabelCGColArr[0]
+        case "과자" :
+            return uiLabelCGColArr[1]
+        case "냉동식품" :
+            return uiLabelCGColArr[2]
+        case "빵" :
+            return uiLabelCGColArr[3]
+        case "야채" :
+            return uiLabelCGColArr[4]
+        case "해산물" :
+            return uiLabelCGColArr[5]
+        case "기타" :
+            return uiLabelCGColArr[6]
+        default:
+            return uiLabelCGColArr[6]
+        }
+    }
+    
     static func == (lhs: Self, rhs: Self) -> Bool {
         // [] 동등조건 추가 -> 추후 구현
         return lhs.foodId == rhs.foodId
