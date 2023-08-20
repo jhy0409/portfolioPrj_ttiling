@@ -11,12 +11,32 @@ import UserNotifications
 class AFTimerViewController: UIViewController, fVmodel {
     // MARK: ------------------- IBOutlets -------------------
     @IBOutlet weak var collectionView: UICollectionView!
-    
+    @IBOutlet weak var lbl_empty: UILabel!
     
     // MARK: ------------------- Variables -------------------
     var startTime: Date?
     static let userNotiCenter = UNUserNotificationCenter.current()
     
+    var emptyStr: String {
+        var res: String = ""
+
+        if foodShared.saveSpot == .local {
+            if foodShared.foods.isEmpty {
+                res = "로컬에 저장된 값이 없습니다."
+            } else {
+                res = ""
+            }
+            
+        } else if foodShared.saveSpot == .server {
+            if foodShared.foods.isEmpty {
+                res = "서버에 저장된 값이 없습니다."
+            } else {
+                res = ""
+            }
+        }
+        
+        return res
+    }
     
     // MARK: ------------------- View Life Cycle -------------------
     override func viewDidLoad() {
@@ -34,7 +54,11 @@ class AFTimerViewController: UIViewController, fVmodel {
         super.viewWillAppear(true)
         
         foodShared.loadFoods(save: foodShared.saveSpot, sort: foodShared.selectedType) { [weak self] in
-            self?.collectionView.reloadData()
+            guard let `self` = self else { return }
+            
+            self.lbl_empty.text        = self.emptyStr
+            self.lbl_empty.isHidden    = self.emptyStr.isEmpty
+            self.collectionView.reloadData()
         }
     }
     
@@ -70,7 +94,8 @@ class AFTimerViewController: UIViewController, fVmodel {
     // MARK: ------------------- functions -------------------
     
     @objc func setSortArr(_ sender: UISegmentedControl) {
-        print("--> sender selected = \(sender.titleForSegment(at: sender.selectedSegmentIndex) ?? "")\n")
+        let titleStr: String = sender.titleForSegment(at: sender.selectedSegmentIndex) ?? ""
+        print("--> sender selected = \(titleStr)\n")
         
         for i in 0..<foodShared.sortType[sender.tag].count {
             foodShared.sortType[sender.tag][i].selected = i == sender.selectedSegmentIndex
@@ -81,7 +106,12 @@ class AFTimerViewController: UIViewController, fVmodel {
         }
         
         foodShared.loadFoods(save: foodShared.saveSpot, sort: foodShared.selectedType) { [weak self] in
-            self?.collectionView.reloadData()
+            guard let `self` = self else { return }
+            
+            self.lbl_empty.text        = self.emptyStr
+            self.lbl_empty.isHidden    = self.emptyStr.isEmpty
+            
+            self.collectionView.reloadData()
         }
     }
   
@@ -122,6 +152,9 @@ extension AFTimerViewController: UICollectionViewDataSource {
         // [ㅇ] 삭제 버튼 누를 때 동작
         cell.closeBtnHandler = {
             self.foodShared.deleteFood(food)
+            
+            self.lbl_empty.text        = self.emptyStr
+            self.lbl_empty.isHidden    = self.emptyStr.isEmpty
             self.collectionView.reloadData()
         }
         
@@ -184,6 +217,8 @@ extension AFTimerViewController: UNUserNotificationCenterDelegate {
         foodShared.loadFoods(save: foodShared.saveSpot, sort: foodShared.selectedType) { [weak self] in
             guard let `self` = self else { return }
             
+            self.lbl_empty.text        = self.emptyStr
+            self.lbl_empty.isHidden    = self.emptyStr.isEmpty
             self.collectionView.reloadData()
         }
     }

@@ -108,6 +108,7 @@ class FoodManager: NSObject {
         
         if saveSpot == .local {
             localFoods = localFoods.filter{ $0.foodId != food.foodId }
+            if fetchServer { delToServer(obj: food) }
             
         } else if saveSpot == .server {
             serverFoods = serverFoods.filter{ $0.foodId != food.foodId }
@@ -133,14 +134,41 @@ class FoodManager: NSObject {
         saveFood(save: saveSpot, completion)
     }
     
-    func  saveFood(save: SortType) {
+    func saveFood(save: SortType) {
         if save == .local {
             Storage.store(localFoods, to: .documents, as: "foods.json")
+            saveToServer(isFetch: fetchServer)
             
         } else if save == .server {
-            rfr.child("users/\(usrEmail)").removeValue()
+            saveToServer()
+        }
+    }
+    
+    func saveFood(save: SortType, _ completion: (()->Void)? = nil) {
+        if save == .local {
+            Storage.store(localFoods, to: .documents, as: "foods.json", completion)
+            saveToServer(isFetch: fetchServer)
             
-            for (_, obj) in serverFoods.enumerated() {
+        } else if save == .server {
+            saveToServer()
+        }
+    }
+    
+    func delToServer(obj: Food) {
+        print("--> delToServer(key:\n")
+        
+        rfr.child("users/\(usrEmail)/\(obj.key)").removeValue()
+    }
+    
+    /**
+     userDefault에 저장된 fetchServer값이 true일 때 isFetch이하 실행
+     - 대상 : 현재 로컬 목록
+     */
+    func saveToServer(isFetch: Bool) {
+        if isFetch {
+            print("--> saveToServer(isFetch:\n")
+            
+            for (_, obj) in localFoods.enumerated() {
                 rfr.child("users/\(usrEmail)/\(obj.key)/foodName").setValue(obj.foodName)
                 rfr.child("users/\(usrEmail)/\(obj.key)/ondo").setValue(obj.ondo)
                 rfr.child("users/\(usrEmail)/\(obj.key)/hour").setValue(obj.hour)
@@ -156,26 +184,22 @@ class FoodManager: NSObject {
         }
     }
     
-    func saveFood(save: SortType, _ completion: (()->Void)? = nil) {
-        if save == .local {
-            Storage.store(localFoods, to: .documents, as: "foods.json", completion)
+    /// 기존 서버 연동
+    func saveToServer() {
+        rfr.child("users/\(usrEmail)").removeValue()
+        
+        for (_, obj) in serverFoods.enumerated() {
+            rfr.child("users/\(usrEmail)/\(obj.key)/foodName").setValue(obj.foodName)
+            rfr.child("users/\(usrEmail)/\(obj.key)/ondo").setValue(obj.ondo)
+            rfr.child("users/\(usrEmail)/\(obj.key)/hour").setValue(obj.hour)
+            rfr.child("users/\(usrEmail)/\(obj.key)/min").setValue(obj.min)
+            rfr.child("users/\(usrEmail)/\(obj.key)/turningFood").setValue(obj.turningFood)
+            rfr.child("users/\(usrEmail)/\(obj.key)/foodType").setValue(obj.foodType)
             
-        } else if save == .server {
-            rfr.child("users/\(usrEmail)").removeValue()
-            
-            for (_, obj) in serverFoods.enumerated() {
-                rfr.child("users/\(usrEmail)/\(obj.key)/foodName").setValue(obj.foodName)
-                rfr.child("users/\(usrEmail)/\(obj.key)/ondo").setValue(obj.ondo)
-                rfr.child("users/\(usrEmail)/\(obj.key)/hour").setValue(obj.hour)
-                rfr.child("users/\(usrEmail)/\(obj.key)/min").setValue(obj.min)
-                rfr.child("users/\(usrEmail)/\(obj.key)/turningFood").setValue(obj.turningFood)
-                rfr.child("users/\(usrEmail)/\(obj.key)/foodType").setValue(obj.foodType)
-                
-                rfr.child("users/\(usrEmail)/\(obj.key)/crType").setValue(obj.crType)
-                rfr.child("users/\(usrEmail)/\(obj.key)/created").setValue(obj.created)
-                rfr.child("users/\(usrEmail)/\(obj.key)/isTimerOn").setValue(obj.isTimerOn)
-                rfr.child("users/\(usrEmail)/\(obj.key)/foodId").setValue(obj.foodId)
-            }
+            rfr.child("users/\(usrEmail)/\(obj.key)/crType").setValue(obj.crType)
+            rfr.child("users/\(usrEmail)/\(obj.key)/created").setValue(obj.created)
+            rfr.child("users/\(usrEmail)/\(obj.key)/isTimerOn").setValue(obj.isTimerOn)
+            rfr.child("users/\(usrEmail)/\(obj.key)/foodId").setValue(obj.foodId)
         }
     }
     
@@ -190,7 +214,11 @@ class FoodManager: NSObject {
             
         } else if saveSpot == .server {
             self.serverFoods.removeAll()
-            guard usrInfo != nil else { return }
+            
+            guard usrInfo != nil else {
+                completion?()
+                return
+            }
             
             rfr.child("users/\(usrEmail)").getData { [weak self] err, snapshot in
                 guard let `self` = self else { return }
