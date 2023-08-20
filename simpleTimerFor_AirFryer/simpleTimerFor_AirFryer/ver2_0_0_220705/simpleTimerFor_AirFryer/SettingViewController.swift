@@ -438,6 +438,10 @@ class SettingTableViewController: UITableViewController, fVmodel {
         }
     }
     
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return UITableView.automaticDimension
+    }
+    
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "settingTVC", for: indexPath) as! settingTVC
         cell.tag = indexPath.row
@@ -537,8 +541,12 @@ class settingTVC: UITableViewCell {
         if let visView = views.filter({ !$0.isHidden }).first {
             switch visView {
             case lbl_desc:
-                let lblWidth: CGFloat = (obj.rightDesc as NSString).size(withAttributes: [NSAttributedString.Key.font : lbl_desc.font as Any]).width
-                viewRhtAccWidth.constant = lblWidth > (frame.width - lblWidth) ? 100 : lblWidth
+                
+                let lftWidth: CGFloat       = ((lbl_title.text ?? "") as NSString).size(withAttributes: [NSAttributedString.Key.font : lbl_title.font as Any]).width
+                let remainWidth: CGFloat    = frame.width - lftWidth - 10
+                let rhtWidth: CGFloat       = (obj.rightDesc as NSString).size(withAttributes: [NSAttributedString.Key.font : lbl_desc.font as Any]).width + 10
+                
+                viewRhtAccWidth.constant    = (remainWidth - rhtWidth) <= 0 ? remainWidth : rhtWidth
                 
             default:
                 viewRhtAccWidth.constant = visView.frame.width
