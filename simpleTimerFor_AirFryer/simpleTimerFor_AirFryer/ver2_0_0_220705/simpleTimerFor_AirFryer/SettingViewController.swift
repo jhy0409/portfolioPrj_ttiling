@@ -138,19 +138,23 @@ class SettingTableViewController: UITableViewController, fVmodel {
         if sender.isOn {
             
             if (tblArr[1]["cells"] as? [[String: Any]] ?? [])[1]["rightDesc"] is String {
-                //rfr.child("users/\(usrEmail)").removeValue()
                 
-                var uniqueFoods = [Food]()
+                // 신규 추가된 내용만 서버에 업로드
+                //var uniqueFoods = [Food]()
+                //
+                //foodShared.manager.localFoods.forEach { lcFd in
+                //    let hasValue: Bool = foodShared.manager.serverFoods.filter { $0.key == lcFd.key }.count > 0
+                //
+                //    if !hasValue {
+                //        uniqueFoods.append(lcFd)
+                //    }
+                //}
                 
-                foodShared.manager.localFoods.forEach { lcFd in
-                    let hasValue: Bool = foodShared.manager.serverFoods.filter { $0.key == lcFd.key }.count > 0
-                    
-                    if !hasValue {
-                        uniqueFoods.append(lcFd)
-                    }
-                }
                 
-                for (_, obj) in uniqueFoods.enumerated() {
+                //for (_, obj) in uniqueFoods.enumerated() {
+                
+                // 로컬에 있는 모든 항목(로컬 기존 수정 or 신규추가 된 항목) 연동 
+                for (_, obj) in foodShared.manager.localFoods.enumerated() {
                     rfr.child("users/\(usrEmail)/\(obj.key)/foodName").setValue(obj.foodName)
                     rfr.child("users/\(usrEmail)/\(obj.key)/ondo").setValue(obj.ondo)
                     rfr.child("users/\(usrEmail)/\(obj.key)/hour").setValue(obj.hour)
